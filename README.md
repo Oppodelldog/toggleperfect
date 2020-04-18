@@ -11,4 +11,4 @@ Find the model on (www.thingiverse.com)[https://www.thingiverse.com/thing:429502
 * 4 display input keys
 * 4 LEDs
 
-![Gopher proud to help](https://raw.githubusercontent.com/Oppodelldog/toggleperfect/master/gopher_proud_to_help.jpg)
+![Gopher starring at the case](https://raw.githubusercontent.com/Oppodelldog/toggleperfect/master/gopher_staring_at_the_case.jpg)
