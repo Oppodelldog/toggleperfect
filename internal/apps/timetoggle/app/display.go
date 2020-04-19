@@ -1,4 +1,4 @@
-package timetoggle
+package app
 
 import (
 	"github.com/fogleman/gg"
