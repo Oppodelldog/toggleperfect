@@ -1,4 +1,4 @@
-POST http://127.0.0.1:8001/v1/projects
+POST http://{{host}}/v1/projects
 Content-Type: application/json
 
 {
@@ -7,7 +7,7 @@ Content-Type: application/json
 }
 
 ###
-PUT http://127.0.0.1:8001/v1/projects
+PUT http://{{host}}/v1/projects
 Content-Type: application/json
 
 {
@@ -16,11 +16,11 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://127.0.0.1:8001/v1/project/WEB-12020
+DELETE http://{{host}}/v1/project/WEB-12020
 Content-Type: application/json
 
 ###
-GET http://127.0.0.1:8001/v1/project/WEB-12020
+GET http://{{host}}/v1/project/WEB-12020
 Content-Type: application/json
 
 ###
