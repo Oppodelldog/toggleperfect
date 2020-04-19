@@ -1,8 +1,8 @@
 package mails
 
 import (
-	"gitlab.com/Oppodelldog/toggleperfect/internal/display"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/keys"
+	"github.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/keys"
 	"log"
 )
 

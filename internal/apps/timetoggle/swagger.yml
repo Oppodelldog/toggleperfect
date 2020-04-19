@@ -9,7 +9,6 @@ tags:
   - name: "project"
     description: "Everything about Projects"
 schemes:
-  - "https"
   - "http"
 paths:
   /projects:

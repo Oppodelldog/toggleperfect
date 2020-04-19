@@ -2,7 +2,7 @@ package eventhandler
 
 import (
 	"context"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/keys"
+	"github.com/Oppodelldog/toggleperfect/internal/keys"
 )
 
 type EventHandler interface {

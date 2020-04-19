@@ -2,8 +2,8 @@ package app
 
 import (
 	"fmt"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/display"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/keys"
+	"github.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/keys"
 )
 
 type Stocks struct {

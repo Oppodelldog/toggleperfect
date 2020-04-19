@@ -2,14 +2,14 @@ package main
 
 import (
 	"context"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/apps"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/demo"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/display"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/eventhandler"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/keys"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/led"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/rpio"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/util"
+	"github.com/Oppodelldog/toggleperfect/internal/apps"
+	"github.com/Oppodelldog/toggleperfect/internal/demo"
+	"github.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/eventhandler"
+	"github.com/Oppodelldog/toggleperfect/internal/keys"
+	"github.com/Oppodelldog/toggleperfect/internal/led"
+	"github.com/Oppodelldog/toggleperfect/internal/rpio"
+	"github.com/Oppodelldog/toggleperfect/internal/util"
 	"log"
 )
 

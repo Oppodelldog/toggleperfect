@@ -1,9 +1,9 @@
 package main
 
 import (
-	"gitlab.com/Oppodelldog/toggleperfect/internal/apps"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/apps/mails"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/apps"
+	"github.com/Oppodelldog/toggleperfect/internal/apps/mails"
+	"github.com/Oppodelldog/toggleperfect/internal/display"
 )
 
 func New(display display.UpdateChannel) apps.App {

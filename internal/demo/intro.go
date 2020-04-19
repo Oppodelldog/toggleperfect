@@ -1,7 +1,7 @@
 package demo
 
 import (
-	"gitlab.com/Oppodelldog/toggleperfect/internal/led"
+	"github.com/Oppodelldog/toggleperfect/internal/led"
 	"time"
 )
 

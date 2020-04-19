@@ -2,7 +2,7 @@ package apps
 
 import (
 	"fmt"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"log"
 	"os"
 	"path"

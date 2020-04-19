@@ -1,8 +1,8 @@
 package apps
 
 import (
-	"gitlab.com/Oppodelldog/toggleperfect/internal/eventhandler"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/keys"
+	"github.com/Oppodelldog/toggleperfect/internal/eventhandler"
+	"github.com/Oppodelldog/toggleperfect/internal/keys"
 	"log"
 )
 

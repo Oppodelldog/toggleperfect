@@ -1,10 +1,10 @@
 package main
 
 import (
-	"gitlab.com/Oppodelldog/toggleperfect/internal/apps"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/display"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/util"
+	"github.com/Oppodelldog/toggleperfect/internal/apps"
+	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app"
+	"github.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/util"
 	"log"
 )
 
@@ -25,4 +25,5 @@ func main() {
 	timeToggle.Activate()
 
 	<-ctx.Done()
+	timeToggle.Deactivate()
 }

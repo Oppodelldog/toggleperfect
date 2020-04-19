@@ -2,7 +2,7 @@ package apps
 
 import (
 	"context"
-	"gitlab.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"image"
 	"image/jpeg"
 	"log"
