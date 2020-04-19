@@ -36,6 +36,10 @@ paths:
           description: "OK"
         405:
           description: "Invalid input"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/ServerError"
     put:
       tags:
         - "project"
@@ -127,3 +131,11 @@ definitions:
         "x-nullable": false
     xml:
       name: "Project"
+
+  ServerError:
+    type: "object"
+    properties:
+      description:
+        type: "string"
+        "x-nullable": false
+

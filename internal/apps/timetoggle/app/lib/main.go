@@ -22,8 +22,10 @@ func main() {
 
 	displayUpdate := apps.NewDevDisplayChannel(ctx)
 	timeToggle := New(displayUpdate)
+	timeToggle.Init()
 	timeToggle.Activate()
 
 	<-ctx.Done()
 	timeToggle.Deactivate()
+	timeToggle.Dispose()
 }
