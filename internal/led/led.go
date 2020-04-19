@@ -34,6 +34,7 @@ func RunLEDWorker(ctx context.Context) UpdateChannel {
 	ch := make(chan State)
 
 	go func() {
+		defer close(ch)
 		for {
 			select {
 			case state := <-ch:

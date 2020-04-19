@@ -1,11 +1,11 @@
-package intro
+package demo
 
 import (
 	"gitlab.com/Oppodelldog/toggleperfect/internal/led"
 	"time"
 )
 
-func Run(channel led.UpdateChannel) {
+func Intro(channel led.UpdateChannel) {
 
 	knightRider := []led.State{
 		{White: true}, {Green: true}, {Yellow: true}, {Red: true},

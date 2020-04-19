@@ -6,21 +6,21 @@ import (
 	"log"
 )
 
-type App struct {
+type Mails struct {
 	Display display.UpdateChannel
 }
 
-func (a App) HandleEvent(event keys.Event) bool {
+func (a Mails) HandleEvent(event keys.Event) bool {
 	log.Printf("Mails app received event: %#v\n", event)
 	return false
 }
 
-func (a *App) Activate() {
+func (a *Mails) Activate() {
 	log.Print("Mails active")
 	a.Display <- CreateDisplayImage()
 
 }
 
-func (a App) Deactivate() {
+func (a Mails) Deactivate() {
 	log.Print("Mails inactive")
 }

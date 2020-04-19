@@ -1,3 +1,3 @@
 
 build:
-	go build -o ../../../bin/timetoggle.so -buildmode=c-shared app/lib/main.go
+	go build -o ../../../bin/timetoggle.so -buildmode=plugin app/lib/main.go

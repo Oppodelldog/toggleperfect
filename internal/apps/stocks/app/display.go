@@ -1,4 +1,4 @@
-package stocks
+package app
 
 import (
 	"github.com/fogleman/gg"

@@ -6,21 +6,20 @@ import (
 	"log"
 )
 
-type App struct {
-	Display display.DisplayChannel
+type TimeToggle struct {
+	Display display.UpdateChannel
 }
 
-func (a App) HandleEvent(event keys.Event) bool {
+func (a TimeToggle) HandleEvent(event keys.Event) bool {
 	log.Printf("Timetoggle app received event: %#v\n", event)
 	return false
 }
 
-func (a *App) Activate() {
+func (a *TimeToggle) Activate() {
 	log.Print("app active")
 	a.Display <- CreateDisplayImage()
-
 }
 
-func (a App) Deactivate() {
+func (a TimeToggle) Deactivate() {
 	log.Print("app inactive")
 }

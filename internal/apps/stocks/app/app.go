@@ -1,4 +1,4 @@
-package stocks
+package app
 
 import (
 	"fmt"
@@ -6,21 +6,21 @@ import (
 	"gitlab.com/Oppodelldog/toggleperfect/internal/keys"
 )
 
-type App struct {
+type Stocks struct {
 	Display display.UpdateChannel
 }
 
-func (a App) HandleEvent(event keys.Event) bool {
+func (a Stocks) HandleEvent(event keys.Event) bool {
 	fmt.Printf("Timetoggle app received event: %#v\n", event)
 	return false
 }
 
-func (a *App) Activate() {
+func (a *Stocks) Activate() {
 	fmt.Println("stocks active")
 	a.Display <- CreateDisplayImage()
 
 }
 
-func (a App) Deactivate() {
+func (a Stocks) Deactivate() {
 	fmt.Println("stocks inactive")
 }

@@ -3,6 +3,7 @@ package apps
 import (
 	"gitlab.com/Oppodelldog/toggleperfect/internal/eventhandler"
 	"gitlab.com/Oppodelldog/toggleperfect/internal/keys"
+	"log"
 )
 
 func New(apps []App) eventhandler.EventHandler {
@@ -48,11 +49,17 @@ func (n *Apps) handleAppSwitch(event keys.Event) {
 
 	switch event.Key {
 	case keys.Key3:
-		n.current().Deactivate()
-		n.next().Activate()
+		current := n.current()
+		current.Deactivate()
+		next := n.next()
+		next.Activate()
+		log.Printf("switched from %T to %T", current, next)
 	case keys.Key4:
-		n.current().Deactivate()
-		n.prev().Activate()
+		current := n.current()
+		current.Deactivate()
+		prev := n.prev()
+		prev.Activate()
+		log.Printf("switched from %T to %T", current, prev)
 	}
 }
 
