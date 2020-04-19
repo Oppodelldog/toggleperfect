@@ -5,6 +5,7 @@ build-swagger:
 
 generate-assets: ## generates static assets
 	# statics is required to generate assets: https://github.com/go-playground/statics
+	# go get -u github.com/go-playground/statics
 	cp swagger.yml apidocs/v1/swagger.yml
 	statics -i=apidocs -o=apidocs/dist.go  -pkg=apidocs -group=Dist
 
