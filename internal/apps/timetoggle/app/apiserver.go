@@ -60,15 +60,11 @@ func StartApiServer(ctx context.Context) {
 	}()
 
 	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				log.Print("Shutting down api server")
-				err := apiServer.Shutdown()
-				if err != nil {
-					log.Printf("error shuttiong down api server: %v", err)
-				}
-			}
+		<-ctx.Done()
+		log.Print("Shutting down api server")
+		err := apiServer.Shutdown()
+		if err != nil {
+			log.Printf("error shuttiong down api server: %v", err)
 		}
 	}()
 }
