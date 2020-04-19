@@ -40,7 +40,7 @@ func (r replacementFS) Open(name string) (http.File, error) {
 	}
 	if strings.HasSuffix(name, "swagger.yml") {
 		if host, ok := os.LookupEnv("TOGGLE_PERFECT_API_DOCS_HOST"); ok {
-			return replaceFileContent(f, "${TOGGLE_PERFECT_API_DOCS_HOST}", host)
+			return replaceFileContent(f, "TOGGLE_PERFECT_API_DOCS_HOST", host)
 		}
 	}
 	return f, err

@@ -24,6 +24,8 @@ func StartApiServer(ctx context.Context) {
 	swaggerApi.ProjectAddProjectHandler = AddProjectHandler{}
 	swaggerApi.ProjectDeleteProjectHandler = DeleteProjectHandler{}
 	swaggerApi.ProjectGetProjectByIDHandler = GetProjectHandler{}
+	swaggerApi.CaptureAddStartCaptureHandler = AddCaptureStartHandler{}
+	swaggerApi.CaptureAddStopCaptureHandler = AddCaptureStopHandler{}
 
 	parser := flags.NewParser(apiServer, flags.Default)
 	parser.ShortDescription = "Timetoggle API"

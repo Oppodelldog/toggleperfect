@@ -3,7 +3,7 @@ info:
   description: "Swagger definition for time toggle app in toggleperfect"
   version: "1.0.0"
   title: "Timetoggle API"
-host: "${TOGGLE_PERFECT_API_DOCS_HOST}"
+host: "TOGGLE_PERFECT_API_DOCS_HOST"
 basePath: "/v1"
 tags:
   - name: "project"
@@ -87,7 +87,64 @@ paths:
           description: "Invalid ID supplied"
         404:
           description: "Project not found"
-
+  /captures/start:
+    post:
+      tags:
+        - "capture"
+      summary: "Add a new start capture"
+      description: ""
+      operationId: "addStartCapture"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Capture object that needs to be added to the store"
+          required: true
+          schema:
+            $ref: "#/definitions/Capture"
+      responses:
+        204:
+          description: "OK"
+        405:
+          description: "Invalid input"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/ServerError"
+  /captures/stop:
+    post:
+      tags:
+        - "capture"
+      summary: "Add a new stop capture"
+      description: ""
+      operationId: "addStopCapture"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Capture object that needs to be added to the store"
+          required: true
+          schema:
+            $ref: "#/definitions/Capture"
+      responses:
+        204:
+          description: "OK"
+        405:
+          description: "Invalid input"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/ServerError"
 definitions:
   Project:
     type: "object"
@@ -103,6 +160,20 @@ definitions:
         "x-nullable": false
     xml:
       name: "Project"
+  Capture:
+    type: "object"
+    required:
+      - "id"
+      - "timestamp"
+    properties:
+      id:
+        type: "string"
+        "x-nullable": false
+      timestamp:
+        type: "integer"
+        "x-nullable": false
+    xml:
+      name: "Capture"
 
   ServerError:
     type: "object"

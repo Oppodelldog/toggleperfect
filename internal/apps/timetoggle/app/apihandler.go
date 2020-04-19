@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/model"
+	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server/api/capture"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server/api/project"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"github.com/go-openapi/runtime/middleware"
@@ -48,4 +49,30 @@ func projectFromPayload(payload *model.Project) repo.Project {
 func projectToPayload(prj repo.Project) *model.Project {
 	p := model.Project(prj)
 	return &p
+}
+
+type AddCaptureStartHandler struct{}
+
+func (a AddCaptureStartHandler) Handle(params capture.AddStartCaptureParams) middleware.Responder {
+	err := repo.AddStart(captureFromPayload(params.Body))
+	if err != nil {
+		return &capture.AddStartCaptureInternalServerError{Payload: &model.ServerError{Description: err.Error()}}
+	}
+
+	return &capture.AddStartCaptureNoContent{}
+}
+
+func captureFromPayload(payload *model.Capture) repo.Capture {
+	return repo.Capture(*payload)
+}
+
+type AddCaptureStopHandler struct{}
+
+func (a AddCaptureStopHandler) Handle(params capture.AddStopCaptureParams) middleware.Responder {
+	err := repo.AddStop(captureFromPayload(params.Body))
+	if err != nil {
+		return &capture.AddStopCaptureInternalServerError{Payload: &model.ServerError{Description: err.Error()}}
+	}
+
+	return &capture.AddStartCaptureNoContent{}
 }

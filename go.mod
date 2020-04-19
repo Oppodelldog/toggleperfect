@@ -15,6 +15,7 @@ require (
 	github.com/go-playground/statics v1.7.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/jessevdk/go-flags v1.4.0
+	github.com/mailru/easyjson v0.7.1
 	github.com/stianeikeland/go-rpio/v4 v4.4.0
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e

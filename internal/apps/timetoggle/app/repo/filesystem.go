@@ -8,7 +8,7 @@ import (
 	"path"
 )
 
-var repoDir, projectsDir string
+var repoDir, projectsDir, capturesDir string
 
 func init() {
 	var hasRepoDir bool
@@ -28,6 +28,13 @@ func init() {
 	projectsDir = path.Join(repoDir, "projects")
 	log.Printf("repo projects directory is set to: %v", projectsDir)
 	err = os.MkdirAll(projectsDir, 0777)
+	if err != nil {
+		panic(err)
+	}
+
+	capturesDir = path.Join(repoDir, "captures")
+	log.Printf("repo captures directory is set to: %v", capturesDir)
+	err = os.MkdirAll(capturesDir, 0777)
 	if err != nil {
 		panic(err)
 	}
@@ -51,6 +58,15 @@ func getProjectFilePath(ID string) string {
 	return projectFilePath
 }
 
+func openCaptureFileForWriting(ID string) (*os.File, error) {
+	return os.OpenFile(getCaptureFilepath(ID), os.O_CREATE|os.O_RDWR, 0655)
+}
+
+func getCaptureFilepath(ID string) string {
+	captureFilename := fmt.Sprintf("%v.json", ID)
+	captureFilePath := path.Join(capturesDir, captureFilename)
+	return captureFilePath
+}
 func closeWithPanic(f *os.File) {
 	err := f.Close()
 	if err != nil {
