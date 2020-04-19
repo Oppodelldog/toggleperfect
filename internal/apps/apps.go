@@ -19,6 +19,8 @@ func New(apps []App) eventhandler.EventHandler {
 
 type App interface {
 	eventhandler.EventHandler
+	Init()
+	Dispose()
 	Activate()
 	Deactivate()
 }

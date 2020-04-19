@@ -1,4 +1,4 @@
-package mails
+package app
 
 import (
 	"github.com/fogleman/gg"

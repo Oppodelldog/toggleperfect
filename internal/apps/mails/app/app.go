@@ -1,4 +1,4 @@
-package mails
+package app
 
 import (
 	"github.com/Oppodelldog/toggleperfect/internal/display"
@@ -8,6 +8,14 @@ import (
 
 type Mails struct {
 	Display display.UpdateChannel
+}
+
+func (a Mails) Init() {
+	log.Print("Mails init")
+}
+
+func (a Mails) Dispose() {
+	log.Print("Mails dispose")
 }
 
 func (a Mails) HandleEvent(event keys.Event) bool {

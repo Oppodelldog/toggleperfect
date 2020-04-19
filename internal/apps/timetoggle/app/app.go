@@ -13,20 +13,23 @@ type TimeToggle struct {
 	cancelServer func()
 }
 
-func (a TimeToggle) HandleEvent(event keys.Event) bool {
-	log.Printf("Timetoggle app received event: %#v\n", event)
-	return false
+func (a TimeToggle) Init() {
+	a.serverCtx, a.cancelServer = context.WithCancel(context.Background())
+	StartApiServer(a.serverCtx)
+}
+
+func (a TimeToggle) Dispose() {
+	a.cancelServer()
 }
 
 func (a *TimeToggle) Activate() {
-	log.Print("app active")
-	a.serverCtx, a.cancelServer = context.WithCancel(context.Background())
-	StartApiServer(a.serverCtx)
 	a.Display <- CreateDisplayImage()
 }
 
 func (a TimeToggle) Deactivate() {
-	// stop swagger api
-	a.cancelServer()
-	log.Print("app inactive")
+}
+
+func (a TimeToggle) HandleEvent(event keys.Event) bool {
+	log.Printf("Timetoggle app received event: %#v\n", event)
+	return false
 }
