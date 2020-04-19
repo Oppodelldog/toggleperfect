@@ -32,6 +32,8 @@ paths:
           schema:
             $ref: "#/definitions/Project"
       responses:
+        204:
+          description: "OK"
         405:
           description: "Invalid input"
     put:
@@ -54,6 +56,8 @@ paths:
           schema:
             $ref: "#/definitions/Project"
       responses:
+        204:
+          description: "OK"
         400:
           description: "Invalid ID supplied"
         404:
@@ -101,6 +105,8 @@ paths:
           required: true
           type: "string"
       responses:
+        204:
+          description: "OK"
         400:
           description: "Invalid ID supplied"
         404:
@@ -115,7 +121,9 @@ definitions:
     properties:
       id:
         type: "string"
+        "x-nullable": false
       description:
         type: "string"
+        "x-nullable": false
     xml:
       name: "Project"
