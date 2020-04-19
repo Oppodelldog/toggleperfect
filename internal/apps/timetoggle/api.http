@@ -15,3 +15,4 @@ GET http://{{host}}/v1/project/WEB-12020
 Content-Type: application/json
 
 ###
+GET http://{{host}}/apidocs

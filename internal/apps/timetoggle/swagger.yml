@@ -3,7 +3,7 @@ info:
   description: "Swagger definition for time toggle app in toggleperfect"
   version: "1.0.0"
   title: "Timetoggle API"
-host: "toggleperfect"
+host: "${TOGGLE_PERFECT_API_DOCS_HOST}"
 basePath: "/v1"
 tags:
   - name: "project"

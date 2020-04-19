@@ -1,7 +1,12 @@
 .DEFAULT_GOAL := build
 
 build-swagger:
-	# for api build you will need swagger: https://goswagger.io/install.html
+	# swagger is required to generate api code: https://goswagger.io/install.html
+
+generate-assets: ## generates static assets
+	# statics is required to generate assets: https://github.com/go-playground/statics
+	cp swagger.yml apidocs/v1/swagger.yml
+	statics -i=apidocs -o=apidocs/dist.go  -pkg=apidocs -group=Dist
 
 prepare: build-swagger
 
@@ -17,5 +22,5 @@ api-server:
 api-ui:
 	swagger serve swagger.yml
 
-build: prepare
+build: prepare generate-assets
 	go build -o ../../../bin/timetoggle.so -buildmode=plugin app/lib/main.go
