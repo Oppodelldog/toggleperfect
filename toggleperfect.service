@@ -6,6 +6,7 @@ Type=simple
 ExecStart=/home/pi/toggleperfect/bin/toggleperfect
 User=pi
 Group=pi
+EnvironmentFile=/home/pi/toggleperfect/.env.prod
 
 [Install]
 WantedBy=multi-user.target
