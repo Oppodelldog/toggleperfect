@@ -3,7 +3,6 @@ package keys
 import (
 	"context"
 	"github.com/stianeikeland/go-rpio/v4"
-	"log"
 	"time"
 )
 
@@ -48,25 +47,10 @@ type Event struct {
 	Key   Key
 }
 
-func init() {
-	err := rpio.Open()
-	if err != nil {
-		log.Fatalf("unable to open pin: %#v", err)
-	}
-
-	p26 := rpio.Pin(26)
-	p26.Output()
-	p16 := rpio.Pin(16)
-	p16.Output()
-	p20 := rpio.Pin(20)
-	p20.Output()
-	p21 := rpio.Pin(21)
-	p21.Output()
-}
-
 // Creates an event channel to which state changes will be sent when a key is pressed or released.
 // Ensure that rpio.Open is called before using this
 func NewEventChannel(ctx context.Context) <-chan Event {
+	initPins()
 	keys := keys{
 		pins: map[Key]rpio.Pin{
 			Key1: rpio.Pin(5),
@@ -139,6 +123,17 @@ func NewEventChannel(ctx context.Context) <-chan Event {
 	}()
 
 	return stateChannel
+}
+
+func initPins() {
+	p26 := rpio.Pin(26)
+	p26.Output()
+	p16 := rpio.Pin(16)
+	p16.Output()
+	p20 := rpio.Pin(20)
+	p20.Output()
+	p21 := rpio.Pin(21)
+	p21.Output()
 }
 
 type keys struct {

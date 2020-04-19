@@ -8,6 +8,7 @@ import (
 	"gitlab.com/Oppodelldog/toggleperfect/internal/eventhandler"
 	"gitlab.com/Oppodelldog/toggleperfect/internal/keys"
 	"gitlab.com/Oppodelldog/toggleperfect/internal/led"
+	"gitlab.com/Oppodelldog/toggleperfect/internal/rpio"
 	"gitlab.com/Oppodelldog/toggleperfect/internal/util"
 	"log"
 )
@@ -15,6 +16,8 @@ import (
 func main() {
 	log.Print("Toggle Perfect up an running")
 	ctx := util.NewInterruptContext()
+	rpio.Open()
+
 	ctxLED, cancelLED := context.WithCancel(context.Background())
 	ledChannel := led.NewLEDChannel(ctxLED)
 

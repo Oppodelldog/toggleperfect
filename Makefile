@@ -10,3 +10,7 @@ build-plugins:
 start: build
 	nohup bin/toggleperfect > toggleperfect.log 2>&1 &
 
+install-service:
+	sudo rm /etc/systemd/system/toggleperfect.service
+	sudo ln -s /home/pi/toggleperfect/toggleperfect.service /etc/systemd/system/toggleperfect.service
+	sudo systemctl enable toggleperfect

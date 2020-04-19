@@ -1,0 +1,11 @@
+[Unit]
+Description=Toggle Perfect
+
+[Service]
+Type=simple
+ExecStart=/home/pi/toggleperfect/bin/toggleperfect
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target
