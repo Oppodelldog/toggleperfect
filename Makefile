@@ -1,3 +1,4 @@
+.DEFAULT_GOAL := build
 
 build: build-plugins
 	go build -o bin/toggleperfect cmd/main.go

@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := build
+
 build-swagger:
 	# for api build you will need swagger: https://goswagger.io/install.html
 
