@@ -7,15 +7,6 @@ Content-Type: application/json
 }
 
 ###
-PUT http://{{host}}/v1/projects
-Content-Type: application/json
-
-{
-  "Id": "WEB-12020",
-  "Description": "My first project"
-}
-
-###
 DELETE http://{{host}}/v1/project/WEB-12020
 Content-Type: application/json
 

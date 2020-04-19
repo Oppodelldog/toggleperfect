@@ -1,30 +1,37 @@
 package repo
 
+import (
+	"encoding/json"
+)
+
 type Project struct {
 	Description string
 	ID          string
 }
 
 func AddProject(project Project) error {
-	var err error
+	f, err := openProjectFileForWriting(project.ID)
+	if err != nil {
+		return err
+	}
+	defer closeWithPanic(f)
 
-	return err
+	return json.NewEncoder(f).Encode(project)
 }
-func UpdateProject(project Project) error {
-	var err error
 
-	return err
-}
 func GetProject(ID string) (Project, error) {
-	var err error
+	f, err := openProjectFileForReading(ID)
+	if err != nil {
+		return Project{}, err
+	}
+	defer closeWithPanic(f)
 
-	return Project{
-		Description: "My Project Nr " + ID,
-		ID:          ID,
-	}, err
+	var project Project
+	err = json.NewDecoder(f).Decode(&project)
+
+	return project, err
 }
-func DeleteProject(ID string) error {
-	var err error
 
-	return err
+func DeleteProject(ID string) error {
+	return deleteProjectFile(ID)
 }

@@ -18,18 +18,6 @@ func (a AddProjectHandler) Handle(params project.AddProjectParams) middleware.Re
 	return &project.AddProjectNoContent{}
 }
 
-type UpdateProjectHandler struct {
-}
-
-func (u UpdateProjectHandler) Handle(params project.UpdateProjectParams) middleware.Responder {
-	err := repo.UpdateProject(projectFromPayload(params.Body))
-	if err != nil {
-		return &project.AddProjectInternalServerError{Payload: &model.ServerError{Description: err.Error()}}
-	}
-
-	return &project.UpdateProjectNoContent{}
-}
-
 type DeleteProjectHandler struct {
 }
 

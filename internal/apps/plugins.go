@@ -3,10 +3,10 @@ package apps
 import (
 	"fmt"
 	"github.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/util"
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 	"plugin"
 )
 
@@ -35,11 +35,7 @@ func getPluginPath() string {
 	pluginPath, hasPluginPath := os.LookupEnv("TOGGLE_PERFECT_PLUGIN_PATH")
 
 	if !hasPluginPath {
-		var err error
-		pluginPath, err = filepath.Abs(filepath.Dir(os.Args[0]))
-		if err != nil {
-			panic(err)
-		}
+		pluginPath = util.GetExecutableDir()
 	}
 	return pluginPath
 }

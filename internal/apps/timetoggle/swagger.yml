@@ -40,34 +40,6 @@ paths:
           description: "Server error"
           schema:
             $ref: "#/definitions/ServerError"
-    put:
-      tags:
-        - "project"
-      summary: "Update an existing project"
-      description: ""
-      operationId: "updateProject"
-      consumes:
-        - "application/json"
-        - "application/xml"
-      produces:
-        - "application/xml"
-        - "application/json"
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Project object that needs to be added to the store"
-          required: true
-          schema:
-            $ref: "#/definitions/Project"
-      responses:
-        204:
-          description: "OK"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Project not found"
-        405:
-          description: "Validation exception"
   /project/{projectId}:
     get:
       tags:
