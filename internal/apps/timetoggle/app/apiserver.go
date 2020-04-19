@@ -20,7 +20,6 @@ func StartApiServer(ctx context.Context) {
 
 	swaggerApi := api.NewTimetoggleAPI(swaggerSpec)
 	apiServer := server.NewServer(swaggerApi)
-	apiServer.Port = 8001
 
 	swaggerApi.ProjectAddProjectHandler = AddProjectHandler{}
 	swaggerApi.ProjectUpdateProjectHandler = UpdateProjectHandler{}
@@ -31,6 +30,7 @@ func StartApiServer(ctx context.Context) {
 	parser.ShortDescription = "Timetoggle API"
 	parser.LongDescription = "Swagger definition for time toggle app in toggleperfect"
 	apiServer.ConfigureFlags()
+
 	for _, optsGroup := range swaggerApi.CommandLineOptionsGroups {
 		_, err := parser.AddGroup(optsGroup.ShortDescription, optsGroup.LongDescription, optsGroup.Options)
 		if err != nil {
@@ -52,6 +52,8 @@ func StartApiServer(ctx context.Context) {
 
 	go func() {
 		log.Print("Starting api server")
+		apiServer.Port = 8001
+		apiServer.Host = ""
 		if err := apiServer.Serve(); err != nil {
 			log.Fatalln(err)
 		}
