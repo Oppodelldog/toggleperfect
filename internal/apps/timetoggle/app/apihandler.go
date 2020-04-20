@@ -8,6 +8,24 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 )
 
+type GetProjectListHandler struct{}
+
+func (g GetProjectListHandler) Handle(params project.GetProjectListParams) middleware.Responder {
+	payloadProjects := []*model.Project{}
+
+	projects, err := repo.GetProjectList()
+	if err != nil {
+		return &project.GetProjectListInternalServerError{Payload: &model.ServerError{
+			Description: err.Error(),
+		}}
+	}
+	for _, prj := range projects {
+		payloadProjects = append(payloadProjects, projectToPayload(prj))
+	}
+
+	return &project.GetProjectListOK{Payload: &model.Projects{Projects: payloadProjects}}
+}
+
 type AddProjectHandler struct {
 }
 

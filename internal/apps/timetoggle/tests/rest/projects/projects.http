@@ -58,3 +58,49 @@ GET http://{{host}}/v1/project/WEB-12020
 Content-Type: application/json
 
 > expect-404.js
+
+###
+
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Id": "WEB-1",
+  "Description": "My first project"
+}
+
+> expect-204.js
+
+###
+
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Id": "WEB-2",
+  "Description": "My second project"
+}
+
+> expect-204.js
+
+###
+
+GET http://{{host}}/v1/projects
+Content-Type: application/json
+Accept: application/json
+
+> expect-to-retrieve-two-projects.js
+
+###
+
+DELETE http://{{host}}/v1/project/WEB-1
+Content-Type: application/json
+
+> expect-204.js
+
+###
+
+DELETE http://{{host}}/v1/project/WEB-2
+Content-Type: application/json
+
+> expect-204.js

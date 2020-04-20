@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
+	"strings"
 )
 
 var repoDir, projectsDir, capturesDir string
@@ -72,4 +74,37 @@ func closeWithPanic(f *os.File) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func getAllProjects() ([]*os.File, error) {
+	files := []*os.File{}
+	err := filepath.Walk(projectsDir, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() {
+			return nil
+		}
+
+		suffix := ".json"
+		if strings.HasSuffix(info.Name(), suffix) {
+			id := info.Name()[:len(info.Name())-len(suffix)]
+			f, err := openProjectFileForReading(id)
+			if err != nil {
+				return err
+			}
+			files = append(files, f)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		for _, f := range files {
+			err := f.Close()
+			if err != nil {
+				log.Printf("error in error cleanup while closing file: %v", err)
+			}
+		}
+		return nil, err
+	}
+
+	return files, nil
 }

@@ -24,6 +24,7 @@ func StartApiServer(ctx context.Context) {
 	swaggerApi.ProjectAddProjectHandler = AddProjectHandler{}
 	swaggerApi.ProjectDeleteProjectHandler = DeleteProjectHandler{}
 	swaggerApi.ProjectGetProjectByIDHandler = GetProjectHandler{}
+	swaggerApi.ProjectGetProjectListHandler = GetProjectListHandler{}
 	swaggerApi.CaptureAddStartCaptureHandler = AddCaptureStartHandler{}
 	swaggerApi.CaptureAddStopCaptureHandler = AddCaptureStopHandler{}
 
