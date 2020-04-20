@@ -1,0 +1,60 @@
+###
+
+GET http://{{host}}/v1/project/WEB-12020
+Content-Type: application/json
+Accept: application/json
+
+> expect-404.js
+
+###
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Id": "WEB-12020",
+  "Description": "My first project"
+}
+
+> expect-204.js
+
+###
+
+GET http://{{host}}/v1/project/WEB-12020
+Content-Type: application/json
+Accept: application/json
+
+> get-expect-project.js
+
+###
+
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Id": "WEB-12020",
+  "Description": "My very first project"
+}
+
+> expect-204.js
+
+###
+
+GET http://{{host}}/v1/project/WEB-12020
+Content-Type: application/json
+Accept: application/json
+
+> expect-to-retrieve-updated-project.js
+
+###
+
+DELETE http://{{host}}/v1/project/WEB-12020
+Content-Type: application/json
+
+> expect-204.js
+
+###
+
+GET http://{{host}}/v1/project/WEB-12020
+Content-Type: application/json
+
+> expect-404.js

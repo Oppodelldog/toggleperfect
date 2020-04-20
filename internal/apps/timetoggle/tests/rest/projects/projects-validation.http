@@ -1,0 +1,77 @@
+
+###
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+> expect-422.js
+
+###
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{}
+
+> expect-422.js
+
+###
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Test": "Hello"
+}
+
+> expect-422.js
+
+###
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Id": "WEB-123"
+}
+
+> expect-422.js
+
+###
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Description": "My project"
+}
+
+> expect-422.js
+
+###
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Id": "",
+  "Description": ""
+}
+
+> expect-422.js
+
+###
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Id": "WEB-123",
+  "Description": ""
+}
+
+> expect-422.js
+
+###
+POST http://{{host}}/v1/projects
+Content-Type: application/json
+
+{
+  "Id": "",
+  "Description": "Test"
+}
+
+> expect-422.js

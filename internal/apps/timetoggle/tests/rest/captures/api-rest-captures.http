@@ -1,0 +1,21 @@
+
+###
+
+POST http://{{host}}/v1/captures/start
+Content-Type: application/json
+
+{
+  "Id": "WEB-12020",
+  "Timestamp":1
+}
+
+###
+
+POST http://{{host}}/v1/captures/stop
+Content-Type: application/json
+
+{
+  "Id": "WEB-12020",
+  "Timestamp":2
+}
+
