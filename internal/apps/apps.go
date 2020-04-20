@@ -6,10 +6,14 @@ import (
 	"log"
 )
 
-func New(apps []App) eventhandler.EventHandler {
+func New(apps []App) *Apps {
 	a := &Apps{
 		apps:         apps,
 		currentIndex: 0,
+	}
+
+	for _, application := range a.apps {
+		application.Init()
 	}
 
 	a.current().Activate()
@@ -30,6 +34,11 @@ type Apps struct {
 	currentIndex int
 }
 
+func (n *Apps) Dispose() {
+	for _, application := range n.apps {
+		application.Dispose()
+	}
+}
 func (n *Apps) current() App {
 	return n.apps[n.currentIndex]
 }

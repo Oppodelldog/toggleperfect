@@ -33,7 +33,7 @@ func main() {
 	eventhandler.New(ctx, events, eventHandlers)
 
 	<-ctx.Done()
-
+	eventHandlers.Dispose()
 	demo.Outro(ledChannel)
 	cancelLED()
 }
