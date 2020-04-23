@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := build-all
 
 build-swagger:
 	# swagger is required to generate api code: https://goswagger.io/install.html
