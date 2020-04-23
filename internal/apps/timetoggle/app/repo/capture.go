@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 )
 
 type Capture struct {
@@ -15,6 +16,36 @@ type CaptureFile struct {
 	ID     string
 	Starts []int64
 	Stops  []int64
+}
+
+func GetCaptures() ([]CaptureFile, error) {
+
+	files, err := getStorageFiles(capturesDir)
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		for _, f := range files {
+			err := f.Close()
+			if err != nil {
+				log.Printf("error in error cleanup while closing file: %v", err)
+			}
+		}
+	}()
+
+	var captures []CaptureFile
+	for _, f := range files {
+		var capture CaptureFile
+		err = json.NewDecoder(f).Decode(&capture)
+		if err != nil {
+			return nil, err
+		}
+
+		captures = append(captures, capture)
+	}
+
+	return captures, nil
 }
 
 func AddStart(start Capture) error {

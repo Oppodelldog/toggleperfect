@@ -76,9 +76,9 @@ func closeWithPanic(f *os.File) {
 	}
 }
 
-func getAllProjects() ([]*os.File, error) {
+func getStorageFiles(path string) ([]*os.File, error) {
 	files := []*os.File{}
-	err := filepath.Walk(projectsDir, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil
 		}

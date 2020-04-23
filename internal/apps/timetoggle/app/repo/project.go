@@ -38,7 +38,7 @@ func DeleteProject(ID string) error {
 }
 
 func GetProjectList() ([]Project, error) {
-	files, err := getAllProjects()
+	files, err := getStorageFiles(projectsDir)
 	if err != nil {
 		return nil, err
 	}

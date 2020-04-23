@@ -11,6 +11,7 @@ tags:
 schemes:
   - "http"
 paths:
+
   /projects:
     post:
       tags:
@@ -58,6 +59,7 @@ paths:
           description: "Server error"
           schema:
             $ref: "#/definitions/ServerError"
+
   /project/{projectId}:
     get:
       tags:
@@ -105,7 +107,31 @@ paths:
           description: "Invalid ID supplied"
         404:
           description: "Project not found"
-  /captures/start:
+
+  /captures:
+    get:
+      tags:
+        - "capture"
+      summary: "Shows all cpatures"
+      description: ""
+      operationId: "getCaptureList"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Captures"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/ServerError"
+
+  /capture/start:
     post:
       tags:
         - "capture"
@@ -134,7 +160,8 @@ paths:
           description: "Server error"
           schema:
             $ref: "#/definitions/ServerError"
-  /captures/stop:
+
+  /capture/stop:
     post:
       tags:
         - "capture"
@@ -163,6 +190,30 @@ paths:
           description: "Server error"
           schema:
             $ref: "#/definitions/ServerError"
+
+  /reports/captures/today:
+    get:
+      tags:
+        - "reports"
+      summary: "Shows worked times per project for today"
+      description: ""
+      operationId: "getReportCapturesToday"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ReportCapturesToday"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/ServerError"
+
 definitions:
   Projects:
     type: "object"
@@ -187,6 +238,31 @@ definitions:
         "x-nullable": false
     xml:
       name: "Project"
+
+  Captures:
+    type: "object"
+    properties:
+      captures:
+        type: array
+        items:
+          $ref: '#/definitions/ProjectCaptures'
+        xml:
+          name: "ProjectCaptures"
+
+  ProjectCaptures:
+    properties:
+      id:
+        type: "string"
+        "x-nullable": false
+      starts:
+        type: array
+        items:
+          type: integer
+      stops:
+        type: array
+        items:
+          type: integer
+
   Capture:
     type: "object"
     required:
@@ -201,6 +277,29 @@ definitions:
         "x-nullable": false
     xml:
       name: "Capture"
+
+  ReportCapturesToday:
+    type: "object"
+    properties:
+      projects:
+        type: array
+        items:
+          $ref: '#/definitions/ReportCapturesTodayCapture'
+        xml:
+          name: "Project"
+
+  ReportCapturesTodayCapture:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        "x-nullable": false
+      timeWorked:
+        type: "integer"
+        "x-nullable": false
+      timeWorkedDisplay:
+        type: "string"
+        "x-nullable": false
 
   ServerError:
     type: "object"

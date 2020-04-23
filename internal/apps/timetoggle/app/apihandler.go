@@ -4,8 +4,10 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/model"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server/api/capture"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server/api/project"
+	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server/api/reports"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"github.com/go-openapi/runtime/middleware"
+	"time"
 )
 
 type GetProjectListHandler struct{}
@@ -69,6 +71,29 @@ func projectToPayload(prj repo.Project) *model.Project {
 	return &p
 }
 
+type GetCaptureListHandler struct{}
+
+func (g GetCaptureListHandler) Handle(params capture.GetCaptureListParams) middleware.Responder {
+	payload := &model.Captures{}
+
+	captures, err := repo.GetCaptures()
+	if err != nil {
+		return &capture.GetCaptureListInternalServerError{Payload: &model.ServerError{
+			Description: err.Error(),
+		}}
+	}
+	for _, captureEntry := range captures {
+		payload.Captures = append(payload.Captures, captureToPayload(captureEntry))
+	}
+
+	return &capture.GetCaptureListOK{Payload: payload}
+}
+
+func captureToPayload(c repo.CaptureFile) *model.ProjectCaptures {
+	payload := model.ProjectCaptures(c)
+	return &payload
+}
+
 type AddCaptureStartHandler struct{}
 
 func (a AddCaptureStartHandler) Handle(params capture.AddStartCaptureParams) middleware.Responder {
@@ -93,4 +118,39 @@ func (a AddCaptureStopHandler) Handle(params capture.AddStopCaptureParams) middl
 	}
 
 	return &capture.AddStartCaptureNoContent{}
+}
+
+type GetReportCapturesTodayHandler struct{}
+
+func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTodayParams) middleware.Responder {
+	captures, err := repo.GetCaptures()
+	if err != nil {
+		return &reports.GetReportCapturesTodayInternalServerError{Payload: &model.ServerError{
+			Description: err.Error(),
+		}}
+	}
+
+	payload := &model.ReportCapturesToday{}
+	now := time.Now()
+	minTime := time.Date(now.Year(), now.Month(), now.Day(), 6, 0, 0, 0, time.UTC).Unix()
+	for _, c := range captures {
+		var timeWorked int64
+		for i, start := range c.Starts {
+			if minTime > start {
+				continue
+			}
+
+			if len(c.Stops) > i {
+				timeWorked += c.Stops[i] - start
+			}
+		}
+
+		payload.Projects = append(payload.Projects, &model.ReportCapturesTodayCapture{
+			ID:                c.ID,
+			TimeWorked:        timeWorked,
+			TimeWorkedDisplay: time.Duration(timeWorked).String(),
+		})
+	}
+
+	return &reports.GetReportCapturesTodayOK{Payload: payload}
 }
