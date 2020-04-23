@@ -7,7 +7,7 @@ generate-assets: ## generates static assets
 	# statics is required to generate assets: https://github.com/go-playground/statics
 	# go get -u github.com/go-playground/statics
 	cp swagger.yml apidocs/v1/swagger.yml
-	statics -i=apidocs -o=apidocs/dist.go  -pkg=apidocs -group=Dist
+	statics -i=apidocs -o=apidocs/dist.go  -pkg=apidocs -group=Dist -ignore="(dist.go|apidocs.go|.gitignore)"
 
 prepare: build-swagger
 
@@ -23,5 +23,7 @@ api-server:
 api-ui:
 	swagger serve swagger.yml
 
-build: prepare generate-assets
+build:
 	go build -o ../../../bin/timetoggle.so -buildmode=plugin app/lib/main.go
+
+build-all: prepare generate-assets build
