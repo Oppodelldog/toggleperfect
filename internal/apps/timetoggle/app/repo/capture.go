@@ -20,7 +20,7 @@ type CaptureFile struct {
 
 func GetCaptures() ([]CaptureFile, error) {
 
-	files, err := getStorageFiles(capturesDir)
+	files, err := getStorageFiles(capturesDir, openCaptureFileForReading)
 	if err != nil {
 		return nil, err
 	}

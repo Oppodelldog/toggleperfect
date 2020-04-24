@@ -64,6 +64,10 @@ func openCaptureFileForWriting(ID string) (*os.File, error) {
 	return os.OpenFile(getCaptureFilepath(ID), os.O_CREATE|os.O_RDWR, 0655)
 }
 
+func openCaptureFileForReading(ID string) (*os.File, error) {
+	return os.OpenFile(getCaptureFilepath(ID), os.O_RDONLY, 0655)
+}
+
 func getCaptureFilepath(ID string) string {
 	captureFilename := fmt.Sprintf("%v.json", ID)
 	captureFilePath := path.Join(capturesDir, captureFilename)
@@ -76,7 +80,9 @@ func closeWithPanic(f *os.File) {
 	}
 }
 
-func getStorageFiles(path string) ([]*os.File, error) {
+type openStorageFile func(ID string) (*os.File, error)
+
+func getStorageFiles(path string, openFileFunc openStorageFile) ([]*os.File, error) {
 	files := []*os.File{}
 	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() {
@@ -86,7 +92,7 @@ func getStorageFiles(path string) ([]*os.File, error) {
 		suffix := ".json"
 		if strings.HasSuffix(info.Name(), suffix) {
 			id := info.Name()[:len(info.Name())-len(suffix)]
-			f, err := openProjectFileForReading(id)
+			f, err := openFileFunc(id)
 			if err != nil {
 				return err
 			}

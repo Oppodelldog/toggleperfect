@@ -300,6 +300,9 @@ definitions:
       timeWorkedDisplay:
         type: "string"
         "x-nullable": false
+      numberOfTimesWorked:
+        type: "integer"
+        "x-nullable": false
 
   ServerError:
     type: "object"
