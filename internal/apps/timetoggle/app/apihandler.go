@@ -123,6 +123,25 @@ func (a AddCaptureStopHandler) Handle(params capture.AddStopCaptureParams) middl
 type GetReportCapturesTodayHandler struct{}
 
 func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTodayParams) middleware.Responder {
+	now := time.Now()
+	minTime := time.Date(now.Year(), now.Month(), now.Day(), 6, 0, 0, 0, time.UTC)
+	maxTime := minTime.Add(time.Hour * 16).Add(time.Nanosecond * -1)
+
+	return getReportCaptures(minTime, maxTime)
+}
+
+type GetReportCapturesCurrentMonthHandler struct {
+}
+
+func (g GetReportCapturesCurrentMonthHandler) Handle(params reports.GetReportCapturesCurrentMonthParams) middleware.Responder {
+	now := time.Now()
+	minTime := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
+	maxTime := minTime.AddDate(0, 1, 0).Add(time.Nanosecond * -1)
+
+	return getReportCaptures(minTime, maxTime)
+}
+
+func getReportCaptures(minTime time.Time, maxTime time.Time) middleware.Responder {
 	captures, err := repo.GetCaptures()
 	if err != nil {
 		return &reports.GetReportCapturesTodayInternalServerError{Payload: &model.ServerError{
@@ -130,14 +149,12 @@ func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTo
 		}}
 	}
 
-	payload := &model.ReportCapturesToday{}
-	now := time.Now()
-	minTime := time.Date(now.Year(), now.Month(), now.Day(), 6, 0, 0, 0, time.UTC).Unix()
+	payload := &model.ReportCapturesList{}
 	for _, c := range captures {
 		var secondsWorked int
 		var numberOfTimesWorked int64
 		for i, start := range c.Starts {
-			if minTime > start {
+			if minTime.Unix() > start || maxTime.Unix() < start {
 				continue
 			}
 
@@ -147,12 +164,14 @@ func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTo
 			}
 		}
 
-		payload.Projects = append(payload.Projects, &model.ReportCapturesTodayCapture{
-			ID:                  c.ID,
-			TimeWorked:          int64(secondsWorked),
-			TimeWorkedDisplay:   (time.Duration(secondsWorked) * time.Second).String(),
-			NumberOfTimesWorked: numberOfTimesWorked,
-		})
+		if numberOfTimesWorked > 0 {
+			payload.Projects = append(payload.Projects, &model.ReportCapturesCapture{
+				ID:                  c.ID,
+				TimeWorked:          int64(secondsWorked),
+				TimeWorkedDisplay:   (time.Duration(secondsWorked) * time.Second).String(),
+				NumberOfTimesWorked: numberOfTimesWorked,
+			})
+		}
 	}
 
 	return &reports.GetReportCapturesTodayOK{Payload: payload}

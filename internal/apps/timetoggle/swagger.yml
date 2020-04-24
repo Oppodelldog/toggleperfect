@@ -208,7 +208,30 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/ReportCapturesToday"
+            $ref: "#/definitions/ReportCapturesList"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/ServerError"
+
+  /reports/captures/month:
+    get:
+      tags:
+        - "reports"
+      summary: "Shows worked times per project for the current month"
+      description: ""
+      operationId: "getReportCapturesCurrentMonth"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ReportCapturesList"
         500:
           description: "Server error"
           schema:
@@ -278,17 +301,17 @@ definitions:
     xml:
       name: "Capture"
 
-  ReportCapturesToday:
+  ReportCapturesList:
     type: "object"
     properties:
       projects:
         type: array
         items:
-          $ref: '#/definitions/ReportCapturesTodayCapture'
+          $ref: '#/definitions/ReportCapturesCapture'
         xml:
           name: "Project"
 
-  ReportCapturesTodayCapture:
+  ReportCapturesCapture:
     type: "object"
     properties:
       id:

@@ -8,9 +8,13 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 var repoDir, projectsDir, capturesDir string
+
+const dirPerm = 0777
+const filePerm = 0655
 
 func init() {
 	var hasRepoDir bool
@@ -22,32 +26,33 @@ func init() {
 
 	repoDir = path.Join(repoDir, ".data", "repo")
 	log.Printf("repo directory is set to: %v", repoDir)
-	err := os.MkdirAll(repoDir, 0777)
+
+	err := os.MkdirAll(repoDir, dirPerm)
 	if err != nil {
 		panic(err)
 	}
 
 	projectsDir = path.Join(repoDir, "projects")
 	log.Printf("repo projects directory is set to: %v", projectsDir)
-	err = os.MkdirAll(projectsDir, 0777)
+	err = os.MkdirAll(projectsDir, dirPerm)
 	if err != nil {
 		panic(err)
 	}
 
 	capturesDir = path.Join(repoDir, "captures")
 	log.Printf("repo captures directory is set to: %v", capturesDir)
-	err = os.MkdirAll(capturesDir, 0777)
+	err = os.MkdirAll(capturesDir, dirPerm)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func openProjectFileForReadingWriting(ID string) (*os.File, error) {
-	return os.OpenFile(getProjectFilePath(ID), os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0655)
+func openProjectFileForReadingWriting(fileDir string, ID string) (*os.File, error) {
+	return os.OpenFile(getProjectFilePath(ID), os.O_CREATE|os.O_TRUNC|os.O_RDWR, filePerm)
 }
 
-func openProjectFileForReading(ID string) (*os.File, error) {
-	return os.OpenFile(getProjectFilePath(ID), os.O_RDONLY, 0655)
+func openProjectFileForReading(fileDir string, ID string) (*os.File, error) {
+	return os.OpenFile(getProjectFilePath(ID), os.O_RDONLY, filePerm)
 }
 
 func deleteProjectFile(ID string) error {
@@ -60,19 +65,35 @@ func getProjectFilePath(ID string) string {
 	return projectFilePath
 }
 
-func openCaptureFileForReadingAndWriting(ID string) (*os.File, error) {
-	return os.OpenFile(getCaptureFilepath(ID), os.O_CREATE|os.O_RDWR, 0655)
+func openCaptureFileForReadingAndWritingForCurrentMonth(fileDir string, ID string) (*os.File, error) {
+	storageFilePath := getCaptureFilepathForCurrentMonth(ID)
+	err := os.MkdirAll(path.Dir(storageFilePath), dirPerm)
+	if err != nil {
+		panic(err)
+	}
+	return os.OpenFile(storageFilePath, os.O_CREATE|os.O_RDWR, filePerm)
 }
 
-func openCaptureFileForReading(ID string) (*os.File, error) {
-	return os.OpenFile(getCaptureFilepath(ID), os.O_RDONLY, 0655)
+func openCaptureFileForReadingForCurrentMonth(fileDir string, ID string) (*os.File, error) {
+	return os.OpenFile(path.Join(fileDir, getCaptureFilepathForCurrentMonth(ID)), os.O_RDONLY, filePerm)
 }
 
-func getCaptureFilepath(ID string) string {
-	captureFilename := fmt.Sprintf("%v.json", ID)
-	captureFilePath := path.Join(capturesDir, captureFilename)
+func openCaptureFileForReadingFromDir(fileDir string, ID string) (*os.File, error) {
+	return os.OpenFile(path.Join(fileDir, getCaptureFileName(ID)), os.O_RDONLY, filePerm)
+}
+
+func getCaptureFilepathForCurrentMonth(ID string) string {
+	captureTimeDir := time.Now().Format("200601")
+	captureFilename := getCaptureFileName(ID)
+	captureFilePath := path.Join(capturesDir, captureTimeDir, captureFilename)
 	return captureFilePath
 }
+
+func getCaptureFileName(ID string) string {
+	captureFilename := fmt.Sprintf("%v.json", ID)
+	return captureFilename
+}
+
 func closeWithPanic(f *os.File) {
 	err := f.Close()
 	if err != nil {
@@ -80,11 +101,11 @@ func closeWithPanic(f *os.File) {
 	}
 }
 
-type openStorageFile func(ID string) (*os.File, error)
+type openStorageFile func(fileDir string, ID string) (*os.File, error)
 
-func getStorageFiles(path string, openFileFunc openStorageFile) ([]*os.File, error) {
+func getStorageFiles(walkDir string, openFileFunc openStorageFile) ([]*os.File, error) {
 	files := []*os.File{}
-	err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(walkDir, func(filePath string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil
 		}
@@ -92,7 +113,7 @@ func getStorageFiles(path string, openFileFunc openStorageFile) ([]*os.File, err
 		suffix := ".json"
 		if strings.HasSuffix(info.Name(), suffix) {
 			id := info.Name()[:len(info.Name())-len(suffix)]
-			f, err := openFileFunc(id)
+			f, err := openFileFunc(path.Dir(filePath), id)
 			if err != nil {
 				return err
 			}

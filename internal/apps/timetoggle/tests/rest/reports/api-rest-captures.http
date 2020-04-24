@@ -1,0 +1,9 @@
+
+###
+
+GET http://{{host}}/v1/reports/captures/today
+Content-Type: application/json
+###
+
+GET http://{{host}}/v1/reports/captures/month
+Content-Type: application/json

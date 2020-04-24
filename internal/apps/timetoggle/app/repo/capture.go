@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
+	"path/filepath"
 )
 
 type Capture struct {
@@ -19,12 +21,20 @@ type CaptureFile struct {
 }
 
 func GetCaptures() ([]CaptureFile, error) {
+	var monthDirs []string
+	err := filepath.Walk(capturesDir, func(path string, info os.FileInfo, err error) error {
+		if info.IsDir() && path != capturesDir {
+			monthDirs = append(monthDirs, path)
+		}
 
-	files, err := getStorageFiles(capturesDir, openCaptureFileForReading)
+		return nil
+	})
+
 	if err != nil {
 		return nil, err
 	}
 
+	var files []*os.File
 	defer func() {
 		for _, f := range files {
 			err := f.Close()
@@ -33,6 +43,15 @@ func GetCaptures() ([]CaptureFile, error) {
 			}
 		}
 	}()
+
+	for _, monthDir := range monthDirs {
+		monthFiles, err := getStorageFiles(monthDir, openCaptureFileForReadingFromDir)
+		if err != nil {
+			return nil, err
+		}
+
+		files = append(files, monthFiles...)
+	}
 
 	var captures []CaptureFile
 	for _, f := range files {
@@ -49,7 +68,7 @@ func GetCaptures() ([]CaptureFile, error) {
 }
 
 func AddStart(start Capture) error {
-	f, err := openCaptureFileForReadingAndWriting(start.ID)
+	f, err := openCaptureFileForReadingAndWritingForCurrentMonth("", start.ID)
 	if err != nil {
 		return fmt.Errorf("error opening file: %v", err)
 	}
@@ -71,7 +90,7 @@ func AddStart(start Capture) error {
 }
 
 func AddStop(stop Capture) error {
-	f, err := openCaptureFileForReadingAndWriting(stop.ID)
+	f, err := openCaptureFileForReadingAndWritingForCurrentMonth("", stop.ID)
 	if err != nil {
 		return fmt.Errorf("error opening file: %v", err)
 	}

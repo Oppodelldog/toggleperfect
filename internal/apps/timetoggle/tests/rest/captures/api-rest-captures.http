@@ -1,21 +1,21 @@
 
 ###
 
-POST http://{{host}}/v1/captures/start
+POST http://{{host}}/v1/capture/start
 Content-Type: application/json
 
 {
-  "Id": "WEB-12020",
+  "Id": "Daily",
   "Timestamp":1
 }
 
 ###
 
-POST http://{{host}}/v1/captures/stop
+POST http://{{host}}/v1/capture/stop
 Content-Type: application/json
 
 {
-  "Id": "WEB-12020",
+  "Id": "Daily",
   "Timestamp":2
 }
 
