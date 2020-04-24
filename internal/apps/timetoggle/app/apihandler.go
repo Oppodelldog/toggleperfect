@@ -134,7 +134,7 @@ func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTo
 	now := time.Now()
 	minTime := time.Date(now.Year(), now.Month(), now.Day(), 6, 0, 0, 0, time.UTC).Unix()
 	for _, c := range captures {
-		var secondsWorked int64
+		var secondsWorked int
 		var numberOfTimesWorked int64
 		for i, start := range c.Starts {
 			if minTime > start {
@@ -142,14 +142,14 @@ func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTo
 			}
 
 			if len(c.Stops) > i {
-				secondsWorked += c.Stops[i] - start
+				secondsWorked += int(c.Stops[i] - start)
 				numberOfTimesWorked++
 			}
 		}
 
 		payload.Projects = append(payload.Projects, &model.ReportCapturesTodayCapture{
 			ID:                  c.ID,
-			TimeWorked:          secondsWorked,
+			TimeWorked:          int64(secondsWorked),
 			TimeWorkedDisplay:   (time.Duration(secondsWorked) * time.Second).String(),
 			NumberOfTimesWorked: numberOfTimesWorked,
 		})

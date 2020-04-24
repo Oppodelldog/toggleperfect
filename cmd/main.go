@@ -11,9 +11,14 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/rpio"
 	"github.com/Oppodelldog/toggleperfect/internal/util"
 	"log"
+	"net/http"
+	_ "net/http/pprof"
 )
 
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
+	}()
 	log.Print("Toggle Perfect up an running")
 	ctx := util.NewInterruptContext()
 	rpio.Open()
