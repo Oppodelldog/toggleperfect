@@ -11,7 +11,7 @@ type Project struct {
 }
 
 func AddProject(project Project) error {
-	f, err := openProjectFileForWriting(project.ID)
+	f, err := openProjectFileForReadingWriting(project.ID)
 	if err != nil {
 		return err
 	}

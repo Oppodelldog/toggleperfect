@@ -42,7 +42,7 @@ func init() {
 	}
 }
 
-func openProjectFileForWriting(ID string) (*os.File, error) {
+func openProjectFileForReadingWriting(ID string) (*os.File, error) {
 	return os.OpenFile(getProjectFilePath(ID), os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0655)
 }
 
@@ -60,7 +60,7 @@ func getProjectFilePath(ID string) string {
 	return projectFilePath
 }
 
-func openCaptureFileForWriting(ID string) (*os.File, error) {
+func openCaptureFileForReadingAndWriting(ID string) (*os.File, error) {
 	return os.OpenFile(getCaptureFilepath(ID), os.O_CREATE|os.O_RDWR, 0655)
 }
 

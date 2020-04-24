@@ -49,7 +49,7 @@ func GetCaptures() ([]CaptureFile, error) {
 }
 
 func AddStart(start Capture) error {
-	f, err := openCaptureFileForWriting(start.ID)
+	f, err := openCaptureFileForReadingAndWriting(start.ID)
 	if err != nil {
 		return fmt.Errorf("error opening file: %v", err)
 	}
@@ -71,7 +71,7 @@ func AddStart(start Capture) error {
 }
 
 func AddStop(stop Capture) error {
-	f, err := openCaptureFileForWriting(stop.ID)
+	f, err := openCaptureFileForReadingAndWriting(stop.ID)
 	if err != nil {
 		return fmt.Errorf("error opening file: %v", err)
 	}
