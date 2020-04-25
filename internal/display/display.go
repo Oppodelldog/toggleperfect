@@ -3,6 +3,7 @@ package display
 import (
 	"context"
 	"fmt"
+	"github.com/Oppodelldog/toggleperfect/internal/util"
 	"image"
 	"image/color"
 	_ "image/png"
@@ -27,11 +28,23 @@ func NewDisplayChannel(ctx context.Context) UpdateChannel {
 	images := make(UpdateChannel)
 	go func() {
 		display := NewDisplay()
+
+		lutTicker := time.NewTicker(time.Second * time.Duration(util.LookupEnvInt("TOGGLE_PERFECT_SCREEN_SAVER_INTERVAL_SECONDS", 60)))
+		var latestImage image.Image
 		defer display.Close()
 		for {
 			select {
 			case displayImage := <-images:
+				latestImage = displayImage
 				display.DisplayImage(displayImage)
+			case <-lutTicker.C:
+				if latestImage != nil {
+					log.Print("Save Screen")
+					display.setCleanLut()
+					display.DisplayImage(latestImage)
+					display.setShortLut()
+					log.Print("Save Screen - Done")
+				}
 			case <-ctx.Done():
 				return
 			}
@@ -115,7 +128,7 @@ func NewDisplay() Display {
 	display.sendCommand(VcmDcSettingRegister)
 	display.sendData(0x12)
 	time.Sleep(2 * time.Millisecond)
-	display.setLut()
+	display.setShortLut()
 	fmt.Printf("init device: %v\n", time.Since(dtStart))
 	//  # EPD hardware init end
 	return display
@@ -204,26 +217,26 @@ func (d Display) waitUntilIdle() {
 	log.Printf("wait until idle: %v", time.Since(dtStart))
 }
 
-func (d Display) setLut() {
-	d.sendCommand(LutForVcom) // vcom
-	for count := 0; count < 44; count++ {
-		d.sendData(lutVcomDc[count])
+func (d Display) setLut(l lut) {
+	d.sendCommand(LutForVcom)
+	for _, b := range l.vcomdc {
+		d.sendData(b)
 	}
-	d.sendCommand(LutWhiteToWhite) // ww --
-	for count := 0; count < 42; count++ {
-		d.sendData(lutWw[count])
+	d.sendCommand(LutWhiteToWhite)
+	for _, b := range l.ww {
+		d.sendData(b)
 	}
-	d.sendCommand(LutBlackToWhite) // bw r
-	for count := 0; count < 42; count++ {
-		d.sendData(lutBw[count])
+	d.sendCommand(LutBlackToWhite)
+	for _, b := range l.bw {
+		d.sendData(b)
 	}
-	d.sendCommand(LutWhiteToBlack) // wb w
-	for count := 0; count < 42; count++ {
-		d.sendData(lutBb[count])
+	d.sendCommand(LutWhiteToBlack)
+	for _, b := range l.bb {
+		d.sendData(b)
 	}
-	d.sendCommand(LutBlackToBlack) // bb b
-	for count := 0; count < 42; count++ {
-		d.sendData(lutWb[count])
+	d.sendCommand(LutBlackToBlack)
+	for _, b := range l.wb {
+		d.sendData(b)
 	}
 }
 
@@ -267,4 +280,12 @@ func (d Display) Close() {
 	if err != nil {
 		log.Printf("error closing SPI device: %v", err)
 	}
+}
+
+func (d Display) setCleanLut() {
+	d.setLut(getCleanLut())
+}
+
+func (d Display) setShortLut() {
+	d.setLut(getShortLut())
 }
