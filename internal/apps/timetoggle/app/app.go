@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"fmt"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
@@ -100,6 +101,7 @@ func loadProjects() []Project {
 	var projects []Project
 	list, err := repo.GetProjectList()
 	if err != nil {
+		err = fmt.Errorf("error loading projects: %v", err)
 		panic(err)
 	}
 	for _, prj := range list {

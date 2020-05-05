@@ -2,6 +2,7 @@ package repo
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 )
 
@@ -40,7 +41,7 @@ func DeleteProject(ID string) error {
 func GetProjectList() ([]Project, error) {
 	files, err := getStorageFiles(projectsDir, openProjectFileForReading)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error finding storage files: %v", err)
 	}
 
 	defer func() {
@@ -57,7 +58,7 @@ func GetProjectList() ([]Project, error) {
 		var project Project
 		err = json.NewDecoder(f).Decode(&project)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error decoding storage file '%s': %v", f.Name(), err)
 		}
 
 		projects = append(projects, project)
