@@ -8,7 +8,7 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server/api"
 	"github.com/go-openapi/loads"
-	flags "github.com/jessevdk/go-flags"
+	"github.com/jessevdk/go-flags"
 )
 
 func StartApiServer(ctx context.Context) {

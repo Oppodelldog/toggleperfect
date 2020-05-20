@@ -48,11 +48,11 @@ func init() {
 	}
 }
 
-func openProjectFileForReadingWriting(fileDir string, ID string) (*os.File, error) {
+func openProjectFileForReadingWriting(_ string, ID string) (*os.File, error) {
 	return os.OpenFile(getProjectFilePath(ID), os.O_CREATE|os.O_TRUNC|os.O_RDWR, filePerm)
 }
 
-func openProjectFileForReading(fileDir string, ID string) (*os.File, error) {
+func openProjectFileForReading(_ string, ID string) (*os.File, error) {
 	return os.OpenFile(getProjectFilePath(ID), os.O_RDONLY, filePerm)
 }
 
@@ -66,7 +66,7 @@ func getProjectFilePath(ID string) string {
 	return projectFilePath
 }
 
-func openCaptureFileForWritingForCurrentMonth(fileDir string, ID string) (*os.File, error) {
+func openCaptureFileForWritingForCurrentMonth(_ string, ID string) (*os.File, error) {
 	storageFilePath := getCaptureFilepathForCurrentMonth(ID)
 	err := os.MkdirAll(path.Dir(storageFilePath), dirPerm)
 	if err != nil {
@@ -105,7 +105,7 @@ func closeWithPanic(f *os.File) {
 type openStorageFile func(fileDir string, ID string) (*os.File, error)
 
 func getStorageFiles(walkDir string, openFileFunc openStorageFile) ([]*os.File, error) {
-	files := []*os.File{}
+	var files []*os.File
 	err := filepath.Walk(walkDir, func(filePath string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil

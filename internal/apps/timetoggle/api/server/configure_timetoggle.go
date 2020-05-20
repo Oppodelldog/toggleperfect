@@ -19,6 +19,7 @@ import (
 
 //go:generate swagger generate server --target ../../../timetoggle --name Timetoggle --spec ../../swagger.yml --api-package api --model-package api/model --server-package api/server --exclude-main
 
+//noinspection ALL
 func configureFlags(api *api.TimetoggleAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
@@ -63,6 +64,7 @@ func configureAPI(api *api.TimetoggleAPI) http.Handler {
 }
 
 // The TLS configuration before HTTPS server starts.
+//noinspection ALL
 func configureTLS(tlsConfig *tls.Config) {
 	// Make all necessary changes to the TLS configuration here.
 }
@@ -71,6 +73,7 @@ func configureTLS(tlsConfig *tls.Config) {
 // If you need to modify a config, store server instance to stop it individually later, this is the place.
 // This function can be called multiple times, depending on the number of serving schemes.
 // scheme value will be set accordingly: "http", "https" or "unix"
+//noinspection ALL
 func configureServer(s *http.Server, scheme, addr string) {
 }
 

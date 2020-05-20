@@ -11,8 +11,8 @@ import (
 
 type GetProjectListHandler struct{}
 
-func (g GetProjectListHandler) Handle(params project.GetProjectListParams) middleware.Responder {
-	payloadProjects := []*model.Project{}
+func (g GetProjectListHandler) Handle(project.GetProjectListParams) middleware.Responder {
+	var payloadProjects []*model.Project
 
 	projects, err := repo.GetProjectList()
 	if err != nil {
@@ -72,7 +72,7 @@ func projectToPayload(prj repo.Project) *model.Project {
 
 type GetCaptureListHandler struct{}
 
-func (g GetCaptureListHandler) Handle(params capture.GetCaptureListParams) middleware.Responder {
+func (g GetCaptureListHandler) Handle(capture.GetCaptureListParams) middleware.Responder {
 	payload := &model.Captures{}
 
 	captures, err := repo.GetCaptures()
@@ -132,7 +132,7 @@ func (a SetCaptureLatestStopHandler) Handle(params capture.SetLatestStopParams) 
 
 type GetReportCapturesTodayHandler struct{}
 
-func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTodayParams) middleware.Responder {
+func (g GetReportCapturesTodayHandler) Handle(reports.GetReportCapturesTodayParams) middleware.Responder {
 	result, err := repo.GetTodayCaptures()
 	if err != nil {
 		return &reports.GetReportCapturesTodayInternalServerError{Payload: &model.ServerError{
@@ -146,7 +146,7 @@ func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTo
 type GetReportCapturesCurrentMonthHandler struct {
 }
 
-func (g GetReportCapturesCurrentMonthHandler) Handle(params reports.GetReportCapturesCurrentMonthParams) middleware.Responder {
+func (g GetReportCapturesCurrentMonthHandler) Handle(reports.GetReportCapturesCurrentMonthParams) middleware.Responder {
 	result, err := repo.GetMonthCaptures()
 	if err != nil {
 		return &reports.GetReportCapturesCurrentMonthInternalServerError{Payload: &model.ServerError{

@@ -19,6 +19,7 @@ func init() {
 
 }
 
+//noinspection GoUnusedFunction
 func main2() {
 	ctx := util.NewInterruptContext()
 	displayUpdate := apps.NewDevDisplayChannel(ctx)
@@ -31,6 +32,7 @@ func main2() {
 
 	time.Sleep(time.Second)
 }
+
 func main() {
 	ctx := util.NewInterruptContext()
 	displayUpdate := apps.NewDevDisplayChannel(ctx)
@@ -42,6 +44,7 @@ func main() {
 	time.Sleep(time.Second)
 }
 
+//noinspection GoUnusedFunction
 func main1() {
 	log.Print("** TimeToggle Standalone **")
 	ctx := util.NewInterruptContext()
