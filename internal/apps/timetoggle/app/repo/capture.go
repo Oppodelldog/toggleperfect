@@ -67,47 +67,72 @@ func GetCaptures() ([]CaptureFile, error) {
 	return captures, nil
 }
 
+func SetLatestStop(stop Capture) error {
+	return mutateCaptureFile(stop.ID, func(captureFile CaptureFile) CaptureFile {
+		if len(captureFile.Stops) == 0 {
+			captureFile.Stops = append(captureFile.Stops, stop.Timestamp)
+		} else {
+			captureFile.Stops[len(captureFile.Stops)-1] = stop.Timestamp
+		}
+		captureFile.ID = stop.ID
+
+		return captureFile
+	})
+}
+
 func AddStart(start Capture) error {
-	f, err := openCaptureFileForReadingAndWritingForCurrentMonth("", start.ID)
-	if err != nil {
-		return fmt.Errorf("error opening file: %v", err)
-	}
-	defer closeWithPanic(f)
+	return mutateCaptureFile(start.ID, func(captureFile CaptureFile) CaptureFile {
+		captureFile.Starts = append(captureFile.Starts, start.Timestamp)
+		captureFile.ID = start.ID
 
-	var captureFile CaptureFile
-	err = json.NewDecoder(f).Decode(&captureFile)
-	if err != nil && err != io.EOF {
-		return fmt.Errorf("error decoding file: %v", err)
-	}
-	_, err = f.Seek(0, 0)
-	if err != nil && err != io.EOF {
-		return fmt.Errorf("error seeking: %v", err)
-	}
-	captureFile.Starts = append(captureFile.Starts, start.Timestamp)
-	captureFile.ID = start.ID
-
-	return json.NewEncoder(f).Encode(captureFile)
+		return captureFile
+	})
 }
 
 func AddStop(stop Capture) error {
-	f, err := openCaptureFileForReadingAndWritingForCurrentMonth("", stop.ID)
+	return mutateCaptureFile(stop.ID, func(captureFile CaptureFile) CaptureFile {
+		captureFile.Stops = append(captureFile.Stops, stop.Timestamp)
+		captureFile.ID = stop.ID
+
+		return captureFile
+	})
+}
+
+type mutateCaptureFileFunc func(CaptureFile) CaptureFile
+
+func mutateCaptureFile(ID string, f mutateCaptureFileFunc) error {
+	captureFile, err := openCaptureForCurrentMonth(ID)
 	if err != nil {
-		return fmt.Errorf("error opening file: %v", err)
+		return err
+	}
+
+	captureFile = f(captureFile)
+
+	return saveCaptureForCurrentMonth(captureFile)
+}
+
+func openCaptureForCurrentMonth(ID string) (CaptureFile, error) {
+	f, err := openCaptureFileForReadingForCurrentMonth("", ID)
+	if err != nil {
+		return CaptureFile{}, fmt.Errorf("error opening file: %v", err)
 	}
 	defer closeWithPanic(f)
 
 	var captureFile CaptureFile
 	err = json.NewDecoder(f).Decode(&captureFile)
 	if err != nil && err != io.EOF {
-		return fmt.Errorf("error decoding file: %v", err)
-	}
-	_, err = f.Seek(0, 0)
-	if err != nil && err != io.EOF {
-		return fmt.Errorf("error seeking: %v", err)
+		return CaptureFile{}, fmt.Errorf("error decoding file: %v", err)
 	}
 
-	captureFile.Stops = append(captureFile.Stops, stop.Timestamp)
-	captureFile.ID = stop.ID
+	return captureFile, nil
+}
+
+func saveCaptureForCurrentMonth(captureFile CaptureFile) error {
+	f, err := openCaptureFileForWritingForCurrentMonth("", captureFile.ID)
+	if err != nil {
+		return fmt.Errorf("error opening file for writing: %v", err)
+	}
+	defer closeWithPanic(f)
 
 	return json.NewEncoder(f).Encode(captureFile)
 }

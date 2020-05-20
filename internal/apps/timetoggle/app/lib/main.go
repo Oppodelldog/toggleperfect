@@ -34,6 +34,13 @@ func main() {
 		})
 	})
 
+	time.AfterFunc(time.Second*10, func() {
+		timeToggle.HandleEvent(keys.Event{
+			State: keys.Clicked,
+			Key:   keys.Key3,
+		})
+	})
+
 	<-ctx.Done()
 	timeToggle.Deactivate()
 	timeToggle.Dispose()

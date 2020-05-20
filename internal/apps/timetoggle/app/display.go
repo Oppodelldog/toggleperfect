@@ -88,10 +88,17 @@ func (p Project) startCapture() {
 	if err != nil {
 		panic(err)
 	}
+	errStop := repo.AddStop(repo.Capture{
+		ID:        p.Name,
+		Timestamp: time.Now().Unix(),
+	})
+	if errStop != nil {
+		panic(errStop)
+	}
 }
 
 func (p Project) stopCapture() {
-	err := repo.AddStop(repo.Capture{
+	err := repo.SetLatestStop(repo.Capture{
 		ID:        p.Name,
 		Timestamp: time.Now().Unix(),
 	})

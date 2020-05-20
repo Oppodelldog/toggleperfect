@@ -120,6 +120,17 @@ func (a AddCaptureStopHandler) Handle(params capture.AddStopCaptureParams) middl
 	return &capture.AddStartCaptureNoContent{}
 }
 
+type SetCaptureLatestStopHandler struct{}
+
+func (a SetCaptureLatestStopHandler) Handle(params capture.SetLatestStopParams) middleware.Responder {
+	err := repo.SetLatestStop(captureFromPayload(params.Body))
+	if err != nil {
+		return &capture.SetLatestActivityInternalServerError{Payload: &model.ServerError{Description: err.Error()}}
+	}
+
+	return &capture.SetLatestActivityNoContent{}
+}
+
 type GetReportCapturesTodayHandler struct{}
 
 func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTodayParams) middleware.Responder {

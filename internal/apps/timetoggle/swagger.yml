@@ -191,6 +191,36 @@ paths:
           schema:
             $ref: "#/definitions/ServerError"
 
+  /capture/latestStop:
+    post:
+      tags:
+        - "capture"
+      summary: "Sets the last stop of a capture"
+      description: ""
+      operationId: "setLatestStop"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Capture with the timestamps that will be set as the latest stop of the capture"
+          required: true
+          schema:
+            $ref: "#/definitions/Capture"
+      responses:
+        204:
+          description: "OK"
+        405:
+          description: "Invalid input"
+        500:
+          description: "Server error"
+          schema:
+            $ref: "#/definitions/ServerError"
+
   /reports/captures/today:
     get:
       tags:

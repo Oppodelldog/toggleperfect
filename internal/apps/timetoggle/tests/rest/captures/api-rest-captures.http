@@ -19,3 +19,13 @@ Content-Type: application/json
   "Timestamp":2
 }
 
+
+###
+
+POST http://{{host}}/v1/capture/latestStop
+Content-Type: application/json
+
+{
+  "Id": "Daily",
+  "Timestamp":3
+}

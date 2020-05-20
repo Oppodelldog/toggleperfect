@@ -15,6 +15,7 @@ type TimeToggle struct {
 	activeProject int
 	projects      []Project
 	capturing     bool
+	captureTicker CaptureTicker
 }
 
 func (a *TimeToggle) Init() {
@@ -41,7 +42,7 @@ func (a *TimeToggle) HandleEvent(event keys.Event) bool {
 		if event.State == keys.Clicked {
 			if event.Key == keys.Key1 && a.hasProjects() {
 				a.capturing = true
-				a.currentProject().startCapture()
+				a.startCapture(a.currentProject())
 				a.Display <- CreateProjectScreen(a.currentProject())
 				return true
 			}
@@ -50,25 +51,36 @@ func (a *TimeToggle) HandleEvent(event keys.Event) bool {
 		if event.State == keys.Clicked {
 			if event.Key == keys.Key1 {
 				a.capturing = false
-				a.currentProject().stopCapture()
+				a.stopCapture()
 				a.Display <- CreateStartScreen(len(a.projects))
 			}
 			if event.Key == keys.Key3 && a.hasProjects() {
-				a.currentProject().stopCapture()
+				a.stopCapture()
 				nextProject := a.nextProject()
-				nextProject.startCapture()
+				a.startCapture(nextProject)
 				a.Display <- CreateProjectScreen(nextProject)
 			}
 			if event.Key == keys.Key4 && a.hasProjects() {
-				a.currentProject().stopCapture()
+				a.stopCapture()
 				previousProject := a.previousProject()
-				previousProject.startCapture()
+				a.startCapture(previousProject)
 				a.Display <- CreateProjectScreen(previousProject)
 			}
 		}
 		return true
 	}
 	return false
+}
+
+func (a *TimeToggle) startCapture(previousProject Project) {
+	previousProject.startCapture()
+	a.captureTicker = NewCaptureTicker(a.serverCtx, a.currentProject().Name)
+	a.captureTicker.Start()
+}
+
+func (a *TimeToggle) stopCapture() {
+	a.currentProject().stopCapture()
+	a.captureTicker.Stop()
 }
 
 func (a *TimeToggle) nextProject() Project {

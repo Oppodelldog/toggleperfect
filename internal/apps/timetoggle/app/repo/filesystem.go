@@ -65,13 +65,13 @@ func getProjectFilePath(ID string) string {
 	return projectFilePath
 }
 
-func openCaptureFileForReadingAndWritingForCurrentMonth(fileDir string, ID string) (*os.File, error) {
+func openCaptureFileForWritingForCurrentMonth(fileDir string, ID string) (*os.File, error) {
 	storageFilePath := getCaptureFilepathForCurrentMonth(ID)
 	err := os.MkdirAll(path.Dir(storageFilePath), dirPerm)
 	if err != nil {
 		panic(err)
 	}
-	return os.OpenFile(storageFilePath, os.O_CREATE|os.O_RDWR, filePerm)
+	return os.OpenFile(storageFilePath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, filePerm)
 }
 
 func openCaptureFileForReadingForCurrentMonth(fileDir string, ID string) (*os.File, error) {
