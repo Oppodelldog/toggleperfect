@@ -1,10 +1,11 @@
 package app
 
 import (
+	"image"
+
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font/gofont/goregular"
-	"image"
 )
 
 func CreateDisplayImage() image.Image {

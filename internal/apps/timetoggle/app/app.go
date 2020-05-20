@@ -3,10 +3,11 @@ package app
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
-	"time"
 )
 
 type TimeToggle struct {

@@ -2,9 +2,10 @@ package app
 
 import (
 	"context"
-	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"log"
 	"time"
+
+	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 )
 
 func NewCaptureTicker(ctx context.Context, captureID string) CaptureTicker {

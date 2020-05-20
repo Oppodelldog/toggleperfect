@@ -1,9 +1,10 @@
 package app
 
 import (
+	"log"
+
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
-	"log"
 )
 
 type Mails struct {

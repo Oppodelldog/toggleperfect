@@ -2,13 +2,14 @@ package repo
 
 import (
 	"fmt"
-	"github.com/Oppodelldog/toggleperfect/internal/util"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/Oppodelldog/toggleperfect/internal/util"
 )
 
 var repoDir, projectsDir, capturesDir string

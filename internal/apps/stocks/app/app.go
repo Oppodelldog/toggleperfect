@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
 )

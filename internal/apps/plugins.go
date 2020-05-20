@@ -2,12 +2,13 @@ package apps
 
 import (
 	"fmt"
-	"github.com/Oppodelldog/toggleperfect/internal/display"
-	"github.com/Oppodelldog/toggleperfect/internal/util"
 	"log"
 	"os"
 	"path"
 	"plugin"
+
+	"github.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/util"
 )
 
 func LoadAppFromFile(filePath string, dsp display.UpdateChannel) App {

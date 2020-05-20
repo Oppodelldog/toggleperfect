@@ -1,13 +1,14 @@
 package main
 
 import (
+	"log"
+	"time"
+
 	"github.com/Oppodelldog/toggleperfect/internal/apps"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app"
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
 	"github.com/Oppodelldog/toggleperfect/internal/util"
-	"log"
-	"time"
 )
 
 func New(display display.UpdateChannel) apps.App {

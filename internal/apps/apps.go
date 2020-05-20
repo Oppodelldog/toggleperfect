@@ -1,9 +1,10 @@
 package apps
 
 import (
+	"log"
+
 	"github.com/Oppodelldog/toggleperfect/internal/eventhandler"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
-	"log"
 )
 
 func New(apps []App) *Apps {

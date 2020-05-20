@@ -2,6 +2,10 @@ package main
 
 import (
 	"context"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
+
 	"github.com/Oppodelldog/toggleperfect/internal/apps"
 	"github.com/Oppodelldog/toggleperfect/internal/demo"
 	"github.com/Oppodelldog/toggleperfect/internal/display"
@@ -10,9 +14,6 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/led"
 	"github.com/Oppodelldog/toggleperfect/internal/rpio"
 	"github.com/Oppodelldog/toggleperfect/internal/util"
-	"log"
-	"net/http"
-	_ "net/http/pprof"
 )
 
 func main() {

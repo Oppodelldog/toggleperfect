@@ -1,8 +1,9 @@
 package rpio
 
 import (
-	"github.com/stianeikeland/go-rpio/v4"
 	"log"
+
+	"github.com/stianeikeland/go-rpio/v4"
 )
 
 // Opens RPIO file

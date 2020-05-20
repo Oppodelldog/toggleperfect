@@ -3,13 +3,14 @@ package display
 import (
 	"context"
 	"fmt"
-	"github.com/Oppodelldog/toggleperfect/internal/util"
 	"image"
 	"image/color"
 	_ "image/png"
 	"log"
 	"os"
 	"time"
+
+	"github.com/Oppodelldog/toggleperfect/internal/util"
 
 	"github.com/MaxHalford/halfgone"
 	"github.com/stianeikeland/go-rpio/v4"

@@ -2,6 +2,7 @@ package eventhandler
 
 import (
 	"context"
+
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
 )
 

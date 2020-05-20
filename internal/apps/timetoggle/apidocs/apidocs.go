@@ -1,12 +1,13 @@
 package apidocs
 
 import (
-	"github.com/go-playground/statics/static"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/go-playground/statics/static"
 )
 
 var swaggerUIFiles *static.Files

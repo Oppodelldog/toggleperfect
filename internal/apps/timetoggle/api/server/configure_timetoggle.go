@@ -4,9 +4,10 @@ package server
 
 import (
 	"crypto/tls"
-	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/apidocs"
 	"net/http"
 	"strings"
+
+	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/apidocs"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"

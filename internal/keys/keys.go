@@ -2,8 +2,9 @@ package keys
 
 import (
 	"context"
-	"github.com/stianeikeland/go-rpio/v4"
 	"time"
+
+	"github.com/stianeikeland/go-rpio/v4"
 )
 
 // Key defines a type for keys

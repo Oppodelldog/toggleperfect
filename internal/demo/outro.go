@@ -1,8 +1,9 @@
 package demo
 
 import (
-	"github.com/Oppodelldog/toggleperfect/internal/led"
 	"time"
+
+	"github.com/Oppodelldog/toggleperfect/internal/led"
 )
 
 func Outro(channel led.UpdateChannel) {

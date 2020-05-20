@@ -1,13 +1,14 @@
 package app
 
 import (
+	"image"
+	"time"
+
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/gofont/goregular"
-	"image"
-	"time"
 )
 
 const screenW = 264

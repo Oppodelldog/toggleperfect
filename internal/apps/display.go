@@ -2,11 +2,12 @@ package apps
 
 import (
 	"context"
-	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"image"
 	"image/jpeg"
 	"log"
 	"os"
+
+	"github.com/Oppodelldog/toggleperfect/internal/display"
 )
 
 func NewDevDisplayChannel(ctx context.Context) display.UpdateChannel {
