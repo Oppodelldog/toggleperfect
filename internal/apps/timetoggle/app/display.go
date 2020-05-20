@@ -13,7 +13,8 @@ import (
 const screenW = 264
 const screenH = 176
 
-func CreateStartScreen(numberOfProjects int) image.Image {
+func CreateStartScreen(projects []Project) image.Image {
+
 	dc := gg.NewContext(screenW, screenH)
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
@@ -23,10 +24,38 @@ func CreateStartScreen(numberOfProjects int) image.Image {
 		Size: 14,
 	})
 	dc.SetFontFace(face)
-
 	drawHeadline(dc)
-	if numberOfProjects > 0 {
-		drawButtonHint(dc, face, fnt, 25, 50, "▼", "Start")
+
+	if len(projects) > 0 {
+		drawButtonHint(dc, face, fnt, 25, 50, "▼", "")
+
+		face := truetype.NewFace(fnt, &truetype.Options{
+			Size: 16,
+		})
+		dc.SetFontFace(face)
+
+		const vMargin = 20
+		const xOffset = 50.0
+		const yOffset = 50.0
+
+		var maxWidth = 0.0
+
+		y := yOffset
+		for _, project := range projects {
+			text := project.Name
+			textWidth, _ := dc.MeasureString(text)
+			if maxWidth < textWidth {
+				maxWidth = textWidth
+			}
+			dc.DrawString(text, xOffset, y)
+			y += vMargin
+		}
+		y = yOffset
+		for _, project := range projects {
+			text := project.Capture
+			dc.DrawString(text, xOffset+maxWidth+12, y)
+			y += vMargin
+		}
 	} else {
 		drawHCentered(dc, 80, "No Projects available")
 	}
@@ -124,7 +153,8 @@ func CreateProjectScreen(p Project) image.Image {
 
 	drawProjectName(dc, fnt, 60, p.Name)
 	drawProjectDescription(dc, fnt, 90, p.Description)
-	drawTodayCapture(dc, fnt, 124, p.Capture)
+	drawTodayCapture(dc, fnt, 128, p.Capture)
+
 	dc.InvertX()
 	dc.Push()
 	dc.InvertY()

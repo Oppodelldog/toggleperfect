@@ -17,8 +17,18 @@ func New(display display.UpdateChannel) apps.App {
 func init() {
 
 }
-
 func main() {
+	ctx := util.NewInterruptContext()
+	displayUpdate := apps.NewDevDisplayChannel(ctx)
+
+	projects := app.GetProjectsOverview()
+
+	displayUpdate <- app.CreateStartScreen(projects)
+
+	time.Sleep(time.Second)
+}
+
+func main1() {
 	log.Print("** TimeToggle Standalone **")
 	ctx := util.NewInterruptContext()
 

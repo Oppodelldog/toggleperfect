@@ -6,6 +6,7 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
+	"time"
 )
 
 type TimeToggle struct {
@@ -31,7 +32,7 @@ func (a TimeToggle) Dispose() {
 func (a *TimeToggle) Activate() {
 	a.projects = loadProjects()
 	a.activeProject = 0
-	a.Display <- CreateStartScreen(len(a.projects))
+	a.Display <- CreateStartScreen(GetProjectsOverview())
 }
 
 func (a TimeToggle) Deactivate() {
@@ -52,7 +53,7 @@ func (a *TimeToggle) HandleEvent(event keys.Event) bool {
 			if event.Key == keys.Key1 {
 				a.capturing = false
 				a.stopCapture()
-				a.Display <- CreateStartScreen(len(a.projects))
+				a.Display <- CreateStartScreen(GetProjectsOverview())
 			}
 			if event.Key == keys.Key3 && a.hasProjects() {
 				a.stopCapture()
@@ -125,4 +126,31 @@ func loadProjects() []Project {
 	}
 
 	return projects
+}
+
+func GetProjectsOverview() []Project {
+	captures, err := repo.GetTodayCaptures()
+	if err != nil {
+		panic(err)
+	}
+
+	var projects []Project
+	for _, project := range captures.Projects {
+		if project.TimeWorked < 60 {
+			continue
+		}
+		projects = append(projects, Project{
+			Name:    project.ID,
+			Capture: fmtDuration(time.Duration(project.TimeWorked) * time.Second),
+		})
+	}
+	return projects
+}
+
+func fmtDuration(d time.Duration) string {
+	d = d.Round(time.Minute)
+	h := d / time.Hour
+	d -= h * time.Hour
+	m := d / time.Minute
+	return fmt.Sprintf("%02d:%02d", h, m)
 }

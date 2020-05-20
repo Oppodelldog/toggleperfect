@@ -7,7 +7,6 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server/api/reports"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"github.com/go-openapi/runtime/middleware"
-	"time"
 )
 
 type GetProjectListHandler struct{}
@@ -134,56 +133,39 @@ func (a SetCaptureLatestStopHandler) Handle(params capture.SetLatestStopParams) 
 type GetReportCapturesTodayHandler struct{}
 
 func (g GetReportCapturesTodayHandler) Handle(params reports.GetReportCapturesTodayParams) middleware.Responder {
-	now := time.Now()
-	minTime := time.Date(now.Year(), now.Month(), now.Day(), 6, 0, 0, 0, time.UTC)
-	maxTime := minTime.Add(time.Hour * 16).Add(time.Nanosecond * -1)
-
-	return getReportCaptures(minTime, maxTime)
-}
-
-type GetReportCapturesCurrentMonthHandler struct {
-}
-
-func (g GetReportCapturesCurrentMonthHandler) Handle(params reports.GetReportCapturesCurrentMonthParams) middleware.Responder {
-	now := time.Now()
-	minTime := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
-	maxTime := minTime.AddDate(0, 1, 0).Add(time.Nanosecond * -1)
-
-	return getReportCaptures(minTime, maxTime)
-}
-
-func getReportCaptures(minTime time.Time, maxTime time.Time) middleware.Responder {
-	captures, err := repo.GetCaptures()
+	result, err := repo.GetTodayCaptures()
 	if err != nil {
 		return &reports.GetReportCapturesTodayInternalServerError{Payload: &model.ServerError{
 			Description: err.Error(),
 		}}
 	}
 
-	payload := &model.ReportCapturesList{}
-	for _, c := range captures {
-		var secondsWorked int
-		var numberOfTimesWorked int64
-		for i, start := range c.Starts {
-			if minTime.Unix() > start || maxTime.Unix() < start {
-				continue
-			}
+	return &reports.GetReportCapturesTodayOK{Payload: convertReportResultToPayload(result)}
+}
 
-			if len(c.Stops) > i {
-				secondsWorked += int(c.Stops[i] - start)
-				numberOfTimesWorked++
-			}
-		}
+type GetReportCapturesCurrentMonthHandler struct {
+}
 
-		if numberOfTimesWorked > 0 {
-			payload.Projects = append(payload.Projects, &model.ReportCapturesCapture{
-				ID:                  c.ID,
-				TimeWorked:          int64(secondsWorked),
-				TimeWorkedDisplay:   (time.Duration(secondsWorked) * time.Second).String(),
-				NumberOfTimesWorked: numberOfTimesWorked,
-			})
-		}
+func (g GetReportCapturesCurrentMonthHandler) Handle(params reports.GetReportCapturesCurrentMonthParams) middleware.Responder {
+	result, err := repo.GetMonthCaptures()
+	if err != nil {
+		return &reports.GetReportCapturesCurrentMonthInternalServerError{Payload: &model.ServerError{
+			Description: err.Error(),
+		}}
 	}
 
-	return &reports.GetReportCapturesTodayOK{Payload: payload}
+	return &reports.GetReportCapturesCurrentMonthOK{Payload: convertReportResultToPayload(result)}
+}
+
+func convertReportResultToPayload(result repo.ReportCapturesList) *model.ReportCapturesList {
+	payload := &model.ReportCapturesList{}
+	for _, capturesCapture := range result.Projects {
+		payload.Projects = append(payload.Projects, &model.ReportCapturesCapture{
+			ID:                  capturesCapture.ID,
+			NumberOfTimesWorked: capturesCapture.NumberOfTimesWorked,
+			TimeWorked:          capturesCapture.TimeWorked,
+			TimeWorkedDisplay:   capturesCapture.TimeWorkedDisplay,
+		})
+	}
+	return payload
 }
