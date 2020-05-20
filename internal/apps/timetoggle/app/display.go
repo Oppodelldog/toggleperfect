@@ -21,13 +21,13 @@ func CreateStartScreen(projects []Project) image.Image {
 	dc.SetRGB(0, 0, 0)
 	fnt := getFont()
 	face := truetype.NewFace(fnt, &truetype.Options{
-		Size: 14,
+		Size: 18,
 	})
 	dc.SetFontFace(face)
 	drawHeadline(dc)
 
 	if len(projects) > 0 {
-		drawButtonHint(dc, face, fnt, 25, 50, "▼", "")
+		drawButton(dc, face, fnt, buttonDown().SetY(20).SetX(20))
 
 		face := truetype.NewFace(fnt, &truetype.Options{
 			Size: 16,
@@ -81,26 +81,31 @@ func getFont() *truetype.Font {
 }
 
 func drawHeadline(dc *gg.Context) {
-	drawHCentered(dc, 20, "*** TIME TOGGLE PROJECTS ***")
+	drawHCentered(dc, 20, "══════╡ toggle perfect ╞══════")
 }
 
-func drawButtonHint(dc *gg.Context, face font.Face, fnt *truetype.Font, x, y float64, buttonText, text string) {
+type pos struct {
+	x float64
+	y float64
+}
+
+func drawButton(dc *gg.Context, face font.Face, fnt *truetype.Font, b button) {
 	dc.SetRGB(0, 0, 0)
-	dc.DrawCircle(x+0, y+0, 14)
+	dc.DrawCircle(b.position.x, b.position.y, b.radius)
 	dc.Fill()
 	face = truetype.NewFace(fnt, &truetype.Options{
 		Size: 20,
 	})
 	dc.SetFontFace(face)
 	dc.SetRGB(1, 1, 1)
-	dc.DrawString(buttonText, x-8, y+6)
+	dc.DrawString(b.symbol, b.position.x+b.symbolPos.x, b.position.y+b.symbolPos.y)
 
 	face = truetype.NewFace(fnt, &truetype.Options{
 		Size: 14,
 	})
 	dc.SetFontFace(face)
 	dc.SetRGB(0, 0, 0)
-	dc.DrawString(text, x+20, y+4)
+	dc.DrawString(b.caption, b.captionPos.x, b.captionPos.y+4)
 }
 
 type Project struct {
@@ -147,9 +152,9 @@ func CreateProjectScreen(p Project) image.Image {
 	})
 	dc.SetFontFace(face)
 
-	drawButtonHint(dc, face, fnt, 25, 20, "▲", "")
-	drawButtonHint(dc, face, fnt, 25, screenH-54, "►", "")
-	drawButtonHint(dc, face, fnt, 25, screenH-20, "◄", "")
+	drawButton(dc, face, fnt, buttonUp().SetX(20).SetY(20))
+	drawButton(dc, face, fnt, buttonRight().SetY(screenH-54).SetX(20))
+	drawButton(dc, face, fnt, buttonLeft().SetY(screenH-20).SetX(20))
 
 	drawProjectName(dc, fnt, 60, p.Name)
 	drawProjectDescription(dc, fnt, 90, p.Description)

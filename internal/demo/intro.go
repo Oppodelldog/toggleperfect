@@ -8,9 +8,15 @@ import (
 func Intro(channel led.UpdateChannel) {
 
 	knightRider := []led.State{
-		{White: true}, {Green: true}, {Yellow: true}, {Red: true},
+		{White: true},
+		{Green: true},
+		{Yellow: true},
+		{Red: true},
 		{},
-		{Red: true}, {Yellow: true}, {Green: true}, {White: true},
+		{Red: true},
+		{Yellow: true},
+		{Green: true},
+		{White: true},
 		{},
 	}
 

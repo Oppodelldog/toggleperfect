@@ -17,6 +17,19 @@ func New(display display.UpdateChannel) apps.App {
 func init() {
 
 }
+
+func main2() {
+	ctx := util.NewInterruptContext()
+	displayUpdate := apps.NewDevDisplayChannel(ctx)
+
+	displayUpdate <- app.CreateProjectScreen(app.Project{
+		Name:        "JIRA-ISSUE-19",
+		Description: "ADD A PAGE",
+		Capture:     "",
+	})
+
+	time.Sleep(time.Second)
+}
 func main() {
 	ctx := util.NewInterruptContext()
 	displayUpdate := apps.NewDevDisplayChannel(ctx)
