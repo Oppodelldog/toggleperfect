@@ -30,21 +30,26 @@ func NewDisplayChannel(ctx context.Context) UpdateChannel {
 	go func() {
 		display := NewDisplay()
 
-		lutTicker := time.NewTicker(time.Second * time.Duration(util.LookupEnvInt("TOGGLE_PERFECT_SCREEN_SAVER_INTERVAL_SECONDS", 60)))
+		saveScreenInterval := time.Second * time.Duration(util.LookupEnvInt("TOGGLE_PERFECT_SCREEN_SAVER_INTERVAL_SECONDS", 60))
+		lutTicker := time.NewTicker(saveScreenInterval)
 		var latestImage image.Image
+		var numberOfRenders int
 		defer display.Close()
 		for {
 			select {
 			case displayImage := <-images:
+				numberOfRenders++
 				latestImage = displayImage
 				display.DisplayImage(displayImage)
+				if numberOfRenders == 20 {
+					log.Printf("save the screen due to numberOfRenders==%v", numberOfRenders)
+					saveScreen(display, latestImage)
+					numberOfRenders = 0
+				}
 			case <-lutTicker.C:
 				if latestImage != nil {
-					log.Print("Save Screen")
-					display.setCleanLut()
-					display.DisplayImage(latestImage)
-					display.setShortLut()
-					log.Print("Save Screen - Done")
+					log.Printf("save the screen due to timer %v", saveScreenInterval)
+					saveScreen(display, latestImage)
 				}
 			case <-ctx.Done():
 				return
@@ -53,6 +58,14 @@ func NewDisplayChannel(ctx context.Context) UpdateChannel {
 	}()
 
 	return images
+}
+
+func saveScreen(display Display, latestImage image.Image) {
+	log.Print("Save Screen")
+	display.setCleanLut()
+	display.DisplayImage(latestImage)
+	display.setShortLut()
+	log.Print("Save Screen - Done")
 }
 
 // Ensure rpio.Open() is called before using this
