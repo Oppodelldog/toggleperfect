@@ -43,6 +43,9 @@ func CreateStartScreen(projects []Project) image.Image {
 
 		y := yOffset
 		for _, project := range projects {
+			if project.Capture == "" {
+				continue
+			}
 			text := project.Name
 			textWidth, _ := dc.MeasureString(text)
 			if maxWidth < textWidth {
@@ -152,6 +155,8 @@ func CreateProjectScreen(p Project) image.Image {
 		Size: 14,
 	})
 	dc.SetFontFace(face)
+
+	drawHeadline(dc)
 
 	drawButton(dc, face, fnt, buttonUp().SetX(20).SetY(20))
 	drawButton(dc, face, fnt, buttonRight().SetY(screenH-54).SetX(20))

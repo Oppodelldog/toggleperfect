@@ -33,7 +33,12 @@ func (a TimeToggle) Dispose() {
 func (a *TimeToggle) Activate() {
 	a.projects = loadProjects()
 	a.activeProject = 0
-	a.Display <- CreateStartScreen(GetProjectsOverview())
+
+	projects := GetProjectsOverview()
+	if len(projects) == 0 {
+		projects = a.projects
+	}
+	a.Display <- CreateStartScreen(projects)
 }
 
 func (a TimeToggle) Deactivate() {
