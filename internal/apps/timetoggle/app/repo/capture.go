@@ -112,6 +112,10 @@ func mutateCaptureFile(ID string, f mutateCaptureFileFunc) error {
 }
 
 func openCaptureForCurrentMonth(ID string) (CaptureFile, error) {
+	err := ensureFileForCurrentMonth(ID)
+	if err != nil {
+		return CaptureFile{}, fmt.Errorf("error ensuring file: %v", err)
+	}
 	f, err := openCaptureFileForReadingForCurrentMonth("", ID)
 	if err != nil {
 		return CaptureFile{}, fmt.Errorf("error opening file: %v", err)
@@ -125,6 +129,15 @@ func openCaptureForCurrentMonth(ID string) (CaptureFile, error) {
 	}
 
 	return captureFile, nil
+}
+
+func ensureFileForCurrentMonth(ID string) error {
+	fileName := getFileNameForCurrentMonth("", ID)
+	if _, err := os.Stat(fileName); os.IsNotExist(err) {
+		return saveCaptureForCurrentMonth(CaptureFile{ID: ID})
+	}
+
+	return nil
 }
 
 func saveCaptureForCurrentMonth(captureFile CaptureFile) error {

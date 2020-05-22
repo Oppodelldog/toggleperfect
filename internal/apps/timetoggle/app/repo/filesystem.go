@@ -76,7 +76,11 @@ func openCaptureFileForWritingForCurrentMonth(_ string, ID string) (*os.File, er
 }
 
 func openCaptureFileForReadingForCurrentMonth(fileDir string, ID string) (*os.File, error) {
-	return os.OpenFile(path.Join(fileDir, getCaptureFilepathForCurrentMonth(ID)), os.O_RDONLY, filePerm)
+	return os.OpenFile(getFileNameForCurrentMonth(fileDir, ID), os.O_RDONLY, filePerm)
+}
+
+func getFileNameForCurrentMonth(fileDir string, ID string) string {
+	return path.Join(fileDir, getCaptureFilepathForCurrentMonth(ID))
 }
 
 func openCaptureFileForReadingFromDir(fileDir string, ID string) (*os.File, error) {

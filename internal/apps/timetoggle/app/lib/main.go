@@ -20,7 +20,7 @@ func init() {
 }
 
 //noinspection GoUnusedFunction
-func main() {
+func main2() {
 	ctx := util.NewInterruptContext()
 	displayUpdate := apps.NewDevDisplayChannel(ctx)
 
@@ -33,7 +33,7 @@ func main() {
 	time.Sleep(time.Second)
 }
 
-func main2() {
+func main() {
 	ctx := util.NewInterruptContext()
 	displayUpdate := apps.NewDevDisplayChannel(ctx)
 
