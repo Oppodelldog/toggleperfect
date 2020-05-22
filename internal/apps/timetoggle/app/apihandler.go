@@ -75,7 +75,7 @@ type GetCaptureListHandler struct{}
 func (g GetCaptureListHandler) Handle(capture.GetCaptureListParams) middleware.Responder {
 	payload := &model.Captures{}
 
-	captures, err := repo.GetCaptures()
+	captures, err := repo.GetAllCaptures()
 	if err != nil {
 		return &capture.GetCaptureListInternalServerError{Payload: &model.ServerError{
 			Description: err.Error(),

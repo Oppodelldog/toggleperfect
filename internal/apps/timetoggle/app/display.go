@@ -1,10 +1,6 @@
 package app
 
 import (
-	"image"
-	"time"
-
-	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
@@ -13,64 +9,6 @@ import (
 
 const screenW = 264
 const screenH = 176
-
-func CreateStartScreen(projects []Project) image.Image {
-
-	dc := gg.NewContext(screenW, screenH)
-	dc.SetRGB(1, 1, 1)
-	dc.Clear()
-	dc.SetRGB(0, 0, 0)
-	fnt := getFont()
-	face := truetype.NewFace(fnt, &truetype.Options{
-		Size: 18,
-	})
-	dc.SetFontFace(face)
-	drawHeadline(dc)
-
-	if len(projects) > 0 {
-		drawButton(dc, face, fnt, buttonDown().SetY(20).SetX(20))
-
-		face := truetype.NewFace(fnt, &truetype.Options{
-			Size: 16,
-		})
-		dc.SetFontFace(face)
-
-		const vMargin = 20
-		const xOffset = 50.0
-		const yOffset = 50.0
-
-		var maxWidth = 0.0
-
-		y := yOffset
-		for _, project := range projects {
-			if project.Capture == "" {
-				continue
-			}
-			text := project.Name
-			textWidth, _ := dc.MeasureString(text)
-			if maxWidth < textWidth {
-				maxWidth = textWidth
-			}
-			dc.DrawString(text, xOffset, y)
-			y += vMargin
-		}
-		y = yOffset
-		for _, project := range projects {
-			text := project.Capture
-			dc.DrawString(text, xOffset+maxWidth+12, y)
-			y += vMargin
-		}
-	} else {
-		drawHCentered(dc, 80, "No Projects available")
-	}
-
-	dc.InvertX()
-	dc.Push()
-	dc.InvertY()
-	dc.Push()
-
-	return dc.Image()
-}
 
 func getFont() *truetype.Font {
 
@@ -110,68 +48,6 @@ func drawButton(dc *gg.Context, face font.Face, fnt *truetype.Font, b button) {
 	dc.SetFontFace(face)
 	dc.SetRGB(0, 0, 0)
 	dc.DrawString(b.caption, b.captionPos.x, b.captionPos.y+4)
-}
-
-type Project struct {
-	Name        string
-	Description string
-	Capture     string
-}
-
-func (p Project) startCapture() {
-	err := repo.AddStart(repo.Capture{
-		ID:        p.Name,
-		Timestamp: time.Now().Unix(),
-	})
-	if err != nil {
-		panic(err)
-	}
-	errStop := repo.AddStop(repo.Capture{
-		ID:        p.Name,
-		Timestamp: time.Now().Unix(),
-	})
-	if errStop != nil {
-		panic(errStop)
-	}
-}
-
-func (p Project) stopCapture() {
-	err := repo.SetLatestStop(repo.Capture{
-		ID:        p.Name,
-		Timestamp: time.Now().Unix(),
-	})
-	if err != nil {
-		panic(err)
-	}
-}
-
-func CreateProjectScreen(p Project) image.Image {
-	dc := gg.NewContext(screenW, screenH)
-	dc.SetRGB(1, 1, 1)
-	dc.Clear()
-	dc.SetRGB(0, 0, 0)
-	fnt := getFont()
-	face := truetype.NewFace(fnt, &truetype.Options{
-		Size: 14,
-	})
-	dc.SetFontFace(face)
-
-	drawHeadline(dc)
-
-	drawButton(dc, face, fnt, buttonUp().SetX(20).SetY(20))
-	drawButton(dc, face, fnt, buttonRight().SetY(screenH-54).SetX(20))
-	drawButton(dc, face, fnt, buttonLeft().SetY(screenH-20).SetX(20))
-
-	drawProjectName(dc, fnt, 60, p.Name)
-	drawProjectDescription(dc, fnt, 90, p.Description)
-	drawTodayCapture(dc, fnt, 128, p.Capture)
-
-	dc.InvertX()
-	dc.Push()
-	dc.InvertY()
-	dc.Push()
-
-	return dc.Image()
 }
 
 func drawTodayCapture(dc *gg.Context, fnt *truetype.Font, i float64, s string) {

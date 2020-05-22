@@ -40,6 +40,7 @@ const (
 	Pressed
 	Clicked
 	Released
+	PressedReleased
 )
 
 // Event contains key and it's current state
@@ -114,6 +115,10 @@ func NewEventChannel(ctx context.Context) <-chan Event {
 						keys.state[key] = Released
 						stateChannel <- Event{
 							State: Released,
+							Key:   key,
+						}
+						stateChannel <- Event{
+							State: PressedReleased,
 							Key:   key,
 						}
 					}

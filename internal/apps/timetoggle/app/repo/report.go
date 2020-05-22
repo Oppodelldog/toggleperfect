@@ -15,23 +15,35 @@ type ReportCapturesCapture struct {
 	TimeWorkedDisplay   string
 }
 
-func GetTodayCaptures() (ReportCapturesList, error) {
-	now := time.Now()
-	minTime := time.Date(now.Year(), now.Month(), now.Day(), 6, 0, 0, 0, time.UTC)
-	maxTime := minTime.Add(time.Hour * 16).Add(time.Nanosecond * -1)
-
-	return GetReportCaptures(minTime, maxTime)
-}
-func GetMonthCaptures() (ReportCapturesList, error) {
-	now := time.Now()
-	minTime := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
+func TimeSpanMonth(t time.Time) TimeSpan {
+	minTime := time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.UTC)
 	maxTime := minTime.AddDate(0, 1, 0).Add(time.Nanosecond * -1)
 
-	return GetReportCaptures(minTime, maxTime)
+	return TimeSpan{From: minTime, To: maxTime}
 }
 
-func GetReportCaptures(minTime time.Time, maxTime time.Time) (ReportCapturesList, error) {
-	captures, err := GetCaptures()
+func TimeSpanDay(t time.Time) TimeSpan {
+	minTime := time.Date(t.Year(), t.Month(), t.Day(), 6, 0, 0, 0, time.UTC)
+	maxTime := minTime.Add(time.Hour * 16).Add(time.Nanosecond * -1)
+
+	return TimeSpan{From: minTime, To: maxTime}
+}
+
+type TimeSpan struct {
+	From time.Time
+	To   time.Time
+}
+
+func GetTodayCaptures() (ReportCapturesList, error) {
+	return GetReportCaptures(TimeSpanDay(time.Now()))
+}
+
+func GetMonthCaptures() (ReportCapturesList, error) {
+	return GetReportCaptures(TimeSpanMonth(time.Now()))
+}
+
+func GetReportCaptures(timespan TimeSpan) (ReportCapturesList, error) {
+	captures, err := GetAllCaptures()
 	if err != nil {
 		return ReportCapturesList{}, err
 	}
@@ -41,7 +53,7 @@ func GetReportCaptures(minTime time.Time, maxTime time.Time) (ReportCapturesList
 		var secondsWorked int
 		var numberOfTimesWorked int64
 		for i, start := range c.Starts {
-			if minTime.Unix() > start || maxTime.Unix() < start {
+			if timespan.From.Unix() > start || timespan.To.Unix() < start {
 				continue
 			}
 

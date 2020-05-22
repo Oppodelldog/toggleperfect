@@ -20,7 +20,7 @@ type CaptureFile struct {
 	Stops  []int64
 }
 
-func GetCaptures() ([]CaptureFile, error) {
+func GetAllCaptures() ([]CaptureFile, error) {
 	var monthDirs []string
 	err := filepath.Walk(capturesDir, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() && path != capturesDir {

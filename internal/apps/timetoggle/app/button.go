@@ -38,6 +38,7 @@ func buttonDown() button {
 		},
 	}
 }
+
 func buttonUp() button {
 	return button{
 		radius: defaultButtonRadius,
@@ -64,6 +65,28 @@ func buttonRight() button {
 		symbol: "►",
 		symbolPos: pos{
 			x: -7,
+			y: +7,
+		},
+	}
+}
+
+func buttonPagination() button {
+	return button{
+		radius: defaultButtonRadius,
+		symbol: "▒",
+		symbolPos: pos{
+			x: -6,
+			y: +7,
+		},
+	}
+}
+
+func buttonPreviousDay() button {
+	return button{
+		radius: defaultButtonRadius,
+		symbol: "►",
+		symbolPos: pos{
+			x: -6,
 			y: +7,
 		},
 	}
