@@ -4,22 +4,31 @@ import (
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
+	"golang.org/x/image/font/gofont/gobold"
 	"golang.org/x/image/font/gofont/goregular"
 )
 
 const screenW = 264
 const screenH = 176
 
-func getFont() *truetype.Font {
-
+func getRegularFont() *truetype.Font {
 	// https://de.wikipedia.org/wiki/Windows_Glyph_List_4
-
 	fnt, err := truetype.Parse(goregular.TTF)
 	if err != nil {
 		panic("")
 	}
-	return fnt
 
+	return fnt
+}
+
+func getBoldFont() *truetype.Font {
+	// https://de.wikipedia.org/wiki/Windows_Glyph_List_4
+	fnt, err := truetype.Parse(gobold.TTF)
+	if err != nil {
+		panic("")
+	}
+
+	return fnt
 }
 
 func drawHeadline(dc *gg.Context) {

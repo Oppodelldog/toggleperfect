@@ -91,3 +91,14 @@ func buttonPreviousDay() button {
 		},
 	}
 }
+
+func buttonClose() button {
+	return button{
+		radius: defaultButtonRadius,
+		symbol: "√",
+		symbolPos: pos{
+			x: -6,
+			y: +7,
+		},
+	}
+}

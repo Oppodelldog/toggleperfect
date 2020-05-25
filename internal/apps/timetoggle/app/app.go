@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
@@ -92,6 +93,13 @@ func (a *TimeToggle) HandleEvent(event keys.Event) bool {
 				a.stopCapture()
 				a.Display <- CreateStartScreen(a.projectSummary)
 			}
+			if event.Key == keys.Key2 && a.hasProjects() {
+				projectID := a.currentProject().Name
+				toggleProjectClosed(projectID)
+				a.projects = loadProjects()
+				a.selectProject(projectID)
+				a.Display <- CreateProjectScreen(a.currentProject())
+			}
 			if event.Key == keys.Key3 && a.hasProjects() {
 				a.stopCapture()
 				nextProject := a.nextProject()
@@ -108,6 +116,19 @@ func (a *TimeToggle) HandleEvent(event keys.Event) bool {
 		return true
 	}
 	return false
+}
+
+func toggleProjectClosed(ID string) {
+	p, err := repo.GetProject(ID)
+	if err != nil {
+		log.Printf("error loading project for toggle closed flag: %v", err)
+	} else {
+		p.Closed = !p.Closed
+		err := repo.SaveProject(p)
+		if err != nil {
+			log.Printf("error saving project for toggle closed flag: %v", err)
+		}
+	}
 }
 
 func (a *TimeToggle) startCapture(previousProject Project) {
@@ -147,6 +168,16 @@ func (a TimeToggle) hasProjects() bool {
 	return len(a.projects) > 0
 }
 
+func (a *TimeToggle) selectProject(ID string) {
+	for i := 0; i < len(a.projects); i++ {
+		if a.projects[i].Name == ID {
+			a.activeProject = i
+			return
+		}
+	}
+	log.Printf("could not find project to select: %s", ID)
+}
+
 func loadProjects() []Project {
 	var projects []Project
 	list, err := repo.GetProjectList()
@@ -159,6 +190,7 @@ func loadProjects() []Project {
 			Name:        prj.ID,
 			Description: prj.Description,
 			Capture:     "",
+			Closed:      prj.Closed,
 		})
 	}
 

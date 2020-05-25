@@ -31,7 +31,7 @@ type AddProjectHandler struct {
 }
 
 func (a AddProjectHandler) Handle(params project.AddProjectParams) middleware.Responder {
-	err := repo.AddProject(projectFromPayload(params.Body))
+	err := repo.SaveProject(projectFromPayload(params.Body))
 	if err != nil {
 		return &project.AddProjectInternalServerError{Payload: &model.ServerError{Description: err.Error()}}
 	}

@@ -1,5 +1,4 @@
 ###
-
 GET http://{{host}}/v1/project/WEB-12020
 Content-Type: application/json
 Accept: application/json
@@ -23,7 +22,7 @@ GET http://{{host}}/v1/project/WEB-12020
 Content-Type: application/json
 Accept: application/json
 
-> get-expect-project.js
+> expect-to-retrieve-project.js
 
 ###
 
@@ -32,7 +31,8 @@ Content-Type: application/json
 
 {
   "Id": "WEB-12020",
-  "Description": "My very first project"
+  "Description": "My very first project",
+  "Closed": true
 }
 
 > expect-204.js

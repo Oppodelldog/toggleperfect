@@ -1,8 +1,9 @@
 package app
 
 import (
-	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 	"time"
+
+	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 )
 
 type ProjectSummary struct {
@@ -14,6 +15,7 @@ type ProjectSummary struct {
 type Project struct {
 	Name        string
 	Description string
+	Closed      bool
 	Capture     string
 }
 

@@ -8,7 +8,6 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/apps"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app"
 	"github.com/Oppodelldog/toggleperfect/internal/display"
-	"github.com/Oppodelldog/toggleperfect/internal/keys"
 	"github.com/Oppodelldog/toggleperfect/internal/util"
 )
 
@@ -21,7 +20,7 @@ func init() {
 }
 
 //noinspection GoUnusedFunction
-func main2() {
+func main() {
 	ctx := util.NewInterruptContext()
 	displayUpdate := apps.NewDevDisplayChannel(ctx)
 
@@ -29,12 +28,13 @@ func main2() {
 		Name:        "JIRA-ISSUE-19",
 		Description: "ADD A PAGE",
 		Capture:     "",
+		Closed:      true,
 	})
 
 	time.Sleep(time.Second)
 }
 
-func main() {
+func main1() {
 	ctx := util.NewInterruptContext()
 	displayUpdate := apps.NewDevDisplayChannel(ctx)
 
@@ -73,7 +73,7 @@ func main() {
 }
 
 //noinspection GoUnusedFunction
-func main1() {
+func main2() {
 	log.Print("** TimeToggle Standalone **")
 	ctx := util.NewInterruptContext()
 
@@ -81,20 +81,6 @@ func main1() {
 	timeToggle := New(displayUpdate)
 	timeToggle.Init()
 	timeToggle.Activate()
-
-	time.AfterFunc(time.Second, func() {
-		timeToggle.HandleEvent(keys.Event{
-			State: keys.Clicked,
-			Key:   keys.Key1,
-		})
-	})
-
-	time.AfterFunc(time.Second*10, func() {
-		timeToggle.HandleEvent(keys.Event{
-			State: keys.Clicked,
-			Key:   keys.Key3,
-		})
-	})
 
 	<-ctx.Done()
 	timeToggle.Deactivate()

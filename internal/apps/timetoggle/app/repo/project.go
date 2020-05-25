@@ -7,31 +7,17 @@ import (
 )
 
 type Project struct {
+	Closed      bool
 	Description string
 	ID          string
 }
 
-func AddProject(project Project) error {
-	f, err := openProjectFileForReadingWriting("", project.ID)
-	if err != nil {
-		return err
-	}
-	defer closeWithPanic(f)
-
-	return json.NewEncoder(f).Encode(project)
+func SaveProject(project Project) error {
+	return saveProject(project)
 }
 
 func GetProject(ID string) (Project, error) {
-	f, err := openProjectFileForReading("", ID)
-	if err != nil {
-		return Project{}, err
-	}
-	defer closeWithPanic(f)
-
-	var project Project
-	err = json.NewDecoder(f).Decode(&project)
-
-	return project, err
+	return openProject(ID)
 }
 
 func DeleteProject(ID string) error {
@@ -65,4 +51,27 @@ func GetProjectList() ([]Project, error) {
 	}
 
 	return projects, nil
+}
+
+func openProject(ID string) (Project, error) {
+	f, err := openProjectFileForReading("", ID)
+	if err != nil {
+		return Project{}, err
+	}
+	defer closeWithPanic(f)
+
+	var project Project
+	err = json.NewDecoder(f).Decode(&project)
+
+	return project, err
+}
+
+func saveProject(project Project) error {
+	f, err := openProjectFileForReadingWriting("", project.ID)
+	if err != nil {
+		return err
+	}
+	defer closeWithPanic(f)
+
+	return json.NewEncoder(f).Encode(project)
 }

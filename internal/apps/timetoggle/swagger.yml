@@ -289,6 +289,9 @@ definitions:
       description:
         type: "string"
         "x-nullable": false
+      closed:
+        type: "boolean"
+        "x-nullable": false
     xml:
       name: "Project"
 

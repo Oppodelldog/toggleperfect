@@ -2,9 +2,10 @@ package app
 
 import (
 	"fmt"
+	"image"
+
 	"github.com/fogleman/gg"
 	"github.com/golang/freetype/truetype"
-	"image"
 )
 
 func CreateStartScreen(projectSummary ProjectSummary) image.Image {
@@ -12,7 +13,7 @@ func CreateStartScreen(projectSummary ProjectSummary) image.Image {
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
 	dc.SetRGB(0, 0, 0)
-	fnt := getFont()
+	fnt := getRegularFont()
 	face := truetype.NewFace(fnt, &truetype.Options{
 		Size: 18,
 	})
@@ -80,7 +81,7 @@ func CreateProjectScreen(p Project) image.Image {
 	dc.SetRGB(1, 1, 1)
 	dc.Clear()
 	dc.SetRGB(0, 0, 0)
-	fnt := getFont()
+	fnt := getRegularFont()
 	face := truetype.NewFace(fnt, &truetype.Options{
 		Size: 14,
 	})
@@ -89,12 +90,21 @@ func CreateProjectScreen(p Project) image.Image {
 	drawHeadline(dc)
 
 	drawButton(dc, face, fnt, buttonUp().SetX(20).SetY(20))
+	drawButton(dc, face, getBoldFont(), buttonClose().SetX(20).SetY(54))
+
 	drawButton(dc, face, fnt, buttonRight().SetY(screenH-54).SetX(20))
 	drawButton(dc, face, fnt, buttonLeft().SetY(screenH-20).SetX(20))
 
 	drawProjectName(dc, fnt, 60, p.Name)
 	drawProjectDescription(dc, fnt, 90, p.Description)
 	drawTodayCapture(dc, fnt, 128, p.Capture)
+
+	if p.Closed {
+		dc.SetFontFace(truetype.NewFace(fnt, &truetype.Options{
+			Size: 44,
+		}))
+		drawHCentered(dc, 150, "√")
+	}
 
 	dc.InvertX()
 	dc.Push()

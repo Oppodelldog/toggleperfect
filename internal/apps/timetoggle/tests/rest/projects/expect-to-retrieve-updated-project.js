@@ -9,3 +9,7 @@ client.test("Response Body contains id", function () {
 client.test("Response Body contains description", function () {
     client.assert(response.body["description"] === "My very first project", "expects description");
 });
+
+client.test("Response Body contains closed", function () {
+    client.assert(response.body["closed"] === true, "expects closed to be true");
+});
