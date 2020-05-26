@@ -22,7 +22,7 @@ install-service:
 
 setup: ## Install tools
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s v1.27.0
-	mkdir .bin || mv bin/golangci-lint .bin/golangci-lint
+	mkdir .bin || true; mv bin/golangci-lint .bin/golangci-lint || true
 
 lint: ## Run the linters
 	golangci-lint run
