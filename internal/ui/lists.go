@@ -31,7 +31,7 @@ func (k KeyPins) IsKeyPressed() bool {
 }
 
 func displays(displays []display.UpdateChannel) display.UpdateChannel {
-	var input display.UpdateChannel
+	input := make(display.UpdateChannel)
 	go func() {
 		defer func() {
 			for _, receiver := range displays {
