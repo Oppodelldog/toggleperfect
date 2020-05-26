@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/stianeikeland/go-rpio/v4"
+	"github.com/Oppodelldog/toggleperfect/internal/pin"
 )
 
 // Key defines a type for keys
@@ -49,16 +49,22 @@ type Event struct {
 	Key   Key
 }
 
+type Pins struct {
+	Key1 pin.KeyPin
+	Key2 pin.KeyPin
+	Key3 pin.KeyPin
+	Key4 pin.KeyPin
+}
+
 // Creates an event channel to which state changes will be sent when a key is pressed or released.
 // Ensure that rpio.Open is called before using this
-func NewEventChannel(ctx context.Context) <-chan Event {
-	initPins()
+func NewEventChannel(ctx context.Context, pins Pins) <-chan Event {
 	keys := keys{
-		pins: map[Key]rpio.Pin{
-			Key1: rpio.Pin(5),
-			Key2: rpio.Pin(6),
-			Key3: rpio.Pin(13),
-			Key4: rpio.Pin(19),
+		pins: map[Key]pin.KeyPin{
+			Key1: pins.Key1,
+			Key2: pins.Key2,
+			Key3: pins.Key3,
+			Key4: pins.Key4,
 		},
 		downAt: map[Key]time.Time{},
 		state: map[Key]State{
@@ -67,11 +73,6 @@ func NewEventChannel(ctx context.Context) <-chan Event {
 			Key3: Released,
 			Key4: Released,
 		},
-	}
-
-	for _, pin := range keys.pins {
-		pin.Input()
-		pin.PullUp()
 	}
 
 	stateChannel := make(chan Event)
@@ -131,23 +132,12 @@ func NewEventChannel(ctx context.Context) <-chan Event {
 	return stateChannel
 }
 
-func initPins() {
-	p26 := rpio.Pin(26)
-	p26.Output()
-	p16 := rpio.Pin(16)
-	p16.Output()
-	p20 := rpio.Pin(20)
-	p20.Output()
-	p21 := rpio.Pin(21)
-	p21.Output()
-}
-
 type keys struct {
-	pins   map[Key]rpio.Pin
+	pins   map[Key]pin.KeyPin
 	downAt map[Key]time.Time
 	state  map[Key]State
 }
 
 func (ks keys) IsKeyPressed(k Key) bool {
-	return ks.pins[k].Read() == rpio.Low
+	return ks.pins[k].IsKeyPressed()
 }

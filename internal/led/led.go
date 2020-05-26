@@ -3,7 +3,7 @@ package led
 import (
 	"context"
 
-	"github.com/stianeikeland/go-rpio/v4"
+	"github.com/Oppodelldog/toggleperfect/internal/pin"
 )
 
 type State struct {
@@ -13,25 +13,23 @@ type State struct {
 	Red    bool
 }
 
-type UpdateChannel chan<- State
-
-func NewLEDChannel(ctx context.Context) UpdateChannel {
-	return RunLEDWorker(ctx)
+type Pins struct {
+	White  pin.LedPin
+	Green  pin.LedPin
+	Yellow pin.LedPin
+	Red    pin.LedPin
 }
 
-func RunLEDWorker(ctx context.Context) UpdateChannel {
+type UpdateChannel chan<- State
+
+func NewLEDChannel(ctx context.Context, pins Pins) UpdateChannel {
+	return RunLEDWorker(ctx, pins)
+}
+
+func RunLEDWorker(ctx context.Context, pins Pins) UpdateChannel {
 	worker := worker{
-		white:  rpio.Pin(20),
-		green:  rpio.Pin(26),
-		yellow: rpio.Pin(21),
-		red:    rpio.Pin(16),
+		pins: pins,
 	}
-
-	worker.white.Output()
-	worker.green.Output()
-	worker.yellow.Output()
-	worker.red.Output()
-
 	ch := make(chan State)
 
 	go func() {
@@ -50,20 +48,17 @@ func RunLEDWorker(ctx context.Context) UpdateChannel {
 }
 
 type worker struct {
-	white  rpio.Pin
-	green  rpio.Pin
-	yellow rpio.Pin
-	red    rpio.Pin
+	pins Pins
 }
 
 func (w worker) applyState(state State) {
-	applyPinState(w.white, state.White)
-	applyPinState(w.green, state.Green)
-	applyPinState(w.yellow, state.Yellow)
-	applyPinState(w.red, state.Red)
+	applyPinState(w.pins.White, state.White)
+	applyPinState(w.pins.Green, state.Green)
+	applyPinState(w.pins.Yellow, state.Yellow)
+	applyPinState(w.pins.Red, state.Red)
 }
 
-func applyPinState(pin rpio.Pin, state bool) {
+func applyPinState(pin pin.LedPin, state bool) {
 	if state {
 		pin.High()
 	} else {

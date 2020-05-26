@@ -12,15 +12,16 @@ import (
 )
 
 type TimeToggle struct {
-	Display        display.UpdateChannel
-	serverCtx      context.Context
-	cancelServer   func()
-	activeProject  int
-	projects       []Project
-	capturing      bool
-	captureTicker  CaptureTicker
-	projectSummary ProjectSummary
-	summaryOffset  int
+	Display            display.UpdateChannel
+	serverCtx          context.Context
+	cancelServer       func()
+	activeProject      int
+	projects           []Project
+	capturing          bool
+	captureTicker      CaptureTicker
+	updateScreenTicker *time.Ticker
+	projectSummary     ProjectSummary
+	summaryOffset      int
 }
 
 func (a *TimeToggle) Init() {
@@ -34,22 +35,16 @@ func (a TimeToggle) Dispose() {
 }
 
 func (a *TimeToggle) Activate() {
+	a.updateScreenTicker = time.NewTicker(time.Minute * 10)
 	a.projects = loadProjects()
 	a.activeProject = 0
 	a.summaryOffset = 0
-
 	a.loadProjectSummary()
 	a.Display <- CreateStartScreen(a.projectSummary)
 }
 
-func (a *TimeToggle) loadProjectSummary() {
-	a.projectSummary = GetProjectsOverview(a.summaryOffset)
-	if len(a.projectSummary.Projects) == 0 {
-		a.projectSummary.Projects = a.projects
-	}
-}
-
 func (a TimeToggle) Deactivate() {
+	a.updateScreenTicker.Stop()
 }
 
 func (a *TimeToggle) HandleEvent(event keys.Event) bool {
@@ -96,9 +91,7 @@ func (a *TimeToggle) HandleEvent(event keys.Event) bool {
 			if event.Key == keys.Key2 && a.hasProjects() {
 				projectID := a.currentProject().Name
 				toggleProjectClosed(projectID)
-				a.projects = loadProjects()
-				a.selectProject(projectID)
-				a.Display <- CreateProjectScreen(a.currentProject())
+				a.updateProjects()
 			}
 			if event.Key == keys.Key3 && a.hasProjects() {
 				a.stopCapture()
@@ -116,6 +109,20 @@ func (a *TimeToggle) HandleEvent(event keys.Event) bool {
 		return true
 	}
 	return false
+}
+
+func (a *TimeToggle) loadProjectSummary() {
+	a.projectSummary = GetProjectsOverview(a.summaryOffset)
+	if len(a.projectSummary.Projects) == 0 {
+		a.projectSummary.Projects = a.projects
+	}
+}
+
+func (a *TimeToggle) updateProjects() {
+	projectID := a.currentProject().Name
+	a.projects = loadProjects()
+	a.selectProject(projectID)
+	a.Display <- CreateProjectScreen(a.currentProject())
 }
 
 func toggleProjectClosed(ID string) {

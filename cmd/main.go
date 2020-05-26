@@ -6,12 +6,11 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
+	"github.com/Oppodelldog/toggleperfect/internal/ui"
+
 	"github.com/Oppodelldog/toggleperfect/internal/apps"
 	"github.com/Oppodelldog/toggleperfect/internal/demo"
-	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/eventhandler"
-	"github.com/Oppodelldog/toggleperfect/internal/keys"
-	"github.com/Oppodelldog/toggleperfect/internal/led"
 	"github.com/Oppodelldog/toggleperfect/internal/rpio"
 	"github.com/Oppodelldog/toggleperfect/internal/util"
 )
@@ -25,21 +24,20 @@ func main() {
 	rpio.Open()
 
 	ctxLED, cancelLED := context.WithCancel(context.Background())
-	ledChannel := led.NewLEDChannel(ctxLED)
 
-	demo.Intro(ledChannel)
+	ctl := ui.NewController(ctx, ctxLED)
+	demo.Intro(ctl.Leds)
 
-	events := keys.NewEventChannel(ctx)
-	displayUpdate := display.NewDisplayChannel(ctx)
 	eventHandlers := apps.New([]apps.App{
-		apps.LoadAppFromFile("timetoggle.so", displayUpdate),
-		apps.LoadAppFromFile("stocks.so", displayUpdate),
-		apps.LoadAppFromFile("mails.so", displayUpdate),
+		apps.LoadAppFromFile("timetoggle.so", ctl.Display),
+		apps.LoadAppFromFile("stocks.so", ctl.Display),
+		apps.LoadAppFromFile("mails.so", ctl.Display),
 	})
-	eventhandler.New(ctx, events, eventHandlers)
+
+	eventhandler.New(ctx, ctl.Keys, eventHandlers)
 
 	<-ctx.Done()
 	eventHandlers.Dispose()
-	demo.Outro(ledChannel)
+	demo.Outro(ctl.Leds)
 	cancelLED()
 }
