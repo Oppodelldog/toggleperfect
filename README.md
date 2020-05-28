@@ -38,7 +38,7 @@ This makes it quite easy to put the times one time a day into the ticket system.
 I really like this app and won't miss it anymore, maybe because I made it, maybe because it really is useful?!  
 
 ### Dev UI
-![Dev UI Screenshot](https://raw.githubusercontent.com/Oppodelldog/toggleperfect/master/devui.jpg)
+![Dev UI Screenshot](https://raw.githubusercontent.com/Oppodelldog/toggleperfect/master/devui.png)
 
 Dev UI enables developing the software without having to upload and build it on the device.  
 For more information visit:   
