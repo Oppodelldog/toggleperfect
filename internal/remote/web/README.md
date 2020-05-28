@@ -10,4 +10,4 @@ TP_ENABLE_DEVICE_UI=false
 TP_ENABLE_REMOTE_UI=true
 ```
 
-Then open the index.html file in your Browser.
+Then open the [index.html](index.html) file in your Browser.
