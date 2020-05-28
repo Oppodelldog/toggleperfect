@@ -41,5 +41,4 @@ I really like this app and won't miss it anymore, maybe because I made it, maybe
 ![Dev UI Screenshot](https://raw.githubusercontent.com/Oppodelldog/toggleperfect/master/devui.png)
 
 Dev UI enables developing the software without having to upload and build it on the device.  
-For more information visit:   
-[internal/remote/web/README.md](internal/remote/web/README.md)
+For more information visit [internal/remote/web/README.md](internal/remote/web/README.md).
