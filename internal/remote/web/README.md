@@ -3,7 +3,9 @@
 This supports local development of the device software by emulating
 the UI of the device.
 
-for local development turn off the original device UI and enable  
+![Dev UI Screenshot](https://raw.githubusercontent.com/Oppodelldog/toggleperfect/master/devui.png)
+
+For local development turn off the original device UI and enable  
 the remote UI by settings two env variables:
 ```.env
 TP_ENABLE_DEVICE_UI=false
