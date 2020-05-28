@@ -6,6 +6,12 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
+	"github.com/Oppodelldog/toggleperfect/internal/config"
+	"github.com/Oppodelldog/toggleperfect/internal/display"
+	"github.com/Oppodelldog/toggleperfect/internal/keys"
+	"github.com/Oppodelldog/toggleperfect/internal/led"
+	"github.com/Oppodelldog/toggleperfect/internal/remote"
+
 	"github.com/Oppodelldog/toggleperfect/internal/ui"
 
 	"github.com/Oppodelldog/toggleperfect/internal/apps"
@@ -21,23 +27,42 @@ func main() {
 	}()
 	log.Print("Toggle Perfect up an running")
 	ctx := util.NewInterruptContext()
-	rpio.Open()
 
 	ctxLED, cancelLED := context.WithCancel(context.Background())
 
-	ctl := ui.NewController(ctx, ctxLED)
+	var ledPins []led.Pins
+	var keyPins []keys.Pins
+	var displays []display.UpdateChannel
+
+	if config.EnableDeviceUI {
+		rpio.Open()
+		ledPins = append(ledPins, rpio.LedPins())
+		keyPins = append(keyPins, rpio.KeyPins())
+		displays = append(displays, display.NewDisplayChannel(ctx))
+	}
+
+	if config.EnableRemoteUI {
+		remoteLedPins, remoteKeyPins, remoteDisplay := remote.StartServer(ctx)
+		ledPins = append(ledPins, remoteLedPins)
+		keyPins = append(keyPins, remoteKeyPins)
+		displays = append(displays, remoteDisplay)
+	}
+
+	ctl := ui.NewController(ctx, ctxLED, ledPins, keyPins, displays)
+
 	demo.Intro(ctl.Leds)
 
-	eventHandlers := apps.New([]apps.App{
+	eventHandler := apps.New([]apps.App{
+		apps.LoadAppFromFile("mails.so", ctl.Display),
 		apps.LoadAppFromFile("timetoggle.so", ctl.Display),
 		apps.LoadAppFromFile("stocks.so", ctl.Display),
-		apps.LoadAppFromFile("mails.so", ctl.Display),
 	})
 
-	eventhandler.New(ctx, ctl.Keys, eventHandlers)
+	eventhandler.New(ctx, ctl.Keys, eventHandler)
 
 	<-ctx.Done()
-	eventHandlers.Dispose()
+	eventHandler.Dispose()
 	demo.Outro(ctl.Leds)
+	close(ctl.Display)
 	cancelLED()
 }

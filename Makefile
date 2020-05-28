@@ -27,5 +27,9 @@ setup: ## Install tools
 lint: ## Run the linters
 	golangci-lint run
 
-fmt: ## gofmt and goimports all go files
+fmt-all: ## gofmt and goimports all go files
 	find . -name '*.go' -not -wholename './vendor/*' | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
+
+fmt: ## gofmt and goimports all uncommited go files
+	 git diff --name-only | grep .go | while read -r file; do gofmt -w -s "$$file"; goimports -w "$$file"; done
+

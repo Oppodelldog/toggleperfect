@@ -1,6 +1,8 @@
 package rpio
 
 import (
+	"github.com/Oppodelldog/toggleperfect/internal/keys"
+	"github.com/Oppodelldog/toggleperfect/internal/led"
 	"github.com/stianeikeland/go-rpio/v4"
 )
 
@@ -24,4 +26,22 @@ type Key struct {
 
 func (b Key) IsKeyPressed() bool {
 	return b.pin.Read() == rpio.Low
+}
+
+func LedPins() led.Pins {
+	return led.Pins{
+		White:  LedPin(20),
+		Green:  LedPin(26),
+		Yellow: LedPin(21),
+		Red:    LedPin(16),
+	}
+}
+
+func KeyPins() keys.Pins {
+	return keys.Pins{
+		Key1: KeyPin(5),
+		Key2: KeyPin(6),
+		Key3: KeyPin(13),
+		Key4: KeyPin(19),
+	}
 }

@@ -30,7 +30,7 @@ func (k KeyPins) IsKeyPressed() bool {
 	return false
 }
 
-func displays(displays []display.UpdateChannel) display.UpdateChannel {
+func mergeDisplays(displays []display.UpdateChannel) display.UpdateChannel {
 	input := make(display.UpdateChannel)
 	go func() {
 		defer func() {

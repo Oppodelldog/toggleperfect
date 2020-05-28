@@ -1,0 +1,333 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <title>TooglePerfect Dev UI</title>
+    <style type="text/css">
+        body {
+            font-family: monospace, "lucida console";
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 30px;
+        }
+
+        .device {
+            position: relative;
+            width: 500px;
+            height: 310px;
+            border: 1px solid #d7d7d7;
+        }
+
+        .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #fff36a;
+        }
+
+        .front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .display {
+            position: absolute;
+            left: 140px;
+            top: 56px;
+            width: 264px;
+            height: 176px;
+            background-color: #fff;
+
+            box-shadow: 0px 0px 2px #a68813, inset 0px 0px 2px #000;
+        }
+
+        .buttons {
+            position: absolute;
+            left: 70px;
+            top: 54px;
+        }
+
+        .button + .button {
+            margin-top: 10px;
+        }
+
+        .button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50px;
+            border: 1px solid #ffd5cb;
+            background-color: yellow;
+
+            box-shadow: 0px 3px 8px #d5bc1f, inset 0px 2px 3px #fff7cf;
+        }
+
+        .button.pressed {
+            box-shadow: 0px 1px 2px #d5bc1f, inset 0px 2px 3px #fff7cf;
+        }
+
+        .leds {
+            position: absolute;
+            left: 148px;
+            top: 14px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .led {
+            width: 20px;
+            height: 20px;
+            border-radius: 50px;
+            border: 1px solid grey;
+            box-shadow: 0px 3px 5px #d5bc1f, inset 0px 1px 4px #fffefb;
+        }
+
+        .led + .led {
+            margin-left: 55px;
+        }
+
+        .led1.off {
+            background-color: #74898e;
+        }
+
+        .led1.on {
+            background-color: deepskyblue;
+        }
+
+        .led2.off {
+            background-color: #8e9a80;
+        }
+
+        .led2.on {
+            background-color: lawngreen;
+        }
+
+        .led3.off {
+            background-color: #aaa192;
+        }
+
+        .led3.on {
+            background-color: orange;
+        }
+
+        .led4.off {
+            background-color: #9e8787;
+        }
+
+        .led4.on {
+            background-color: red;
+        }
+
+        * + .log {
+            margin-top: 40px;
+        }
+
+        .log {
+            font-family: monospace, lucida console;
+            border: 1px solid grey;
+            width: 800px;
+            height: 200px;
+            padding: 10px;
+            font-size: 14px;
+            overflow: scroll;
+        }
+
+
+    </style>
+</head>
+<body>
+<h1>Toggle Perfect Dev UI</h1>
+<div class="device">
+    <svg class="back" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+            <g id="screw" class="screw" transform="scale(0.9)">
+                <circle cx="-10" cy="-10" r="20" style="fill:#ffd700;stroke:#000;stroke-width:1;"/>
+                <rect x="-20" y="-13" width="20" height="6" fill="#95894D"/>
+                <rect x="-13" y="-20" width="6" height="20" fill="#95894D"/>
+            </g>
+        </defs>
+        <use xlink:href="#screw" x="470" y="40"/>
+        <use xlink:href="#screw" x="40" y="40"/>
+        <use xlink:href="#screw" x="40" y="280"/>
+        <use xlink:href="#screw" x="470" y="280"/>
+    </svg>
+    <div class="front">
+        <div class="leds">
+            <div class="led led1 off"></div>
+            <div class="led led2 off"></div>
+            <div class="led led3 off"></div>
+            <div class="led led4 off"></div>
+        </div>
+        <div class="buttons">
+            <div id="KEY1" class="button released"></div>
+            <div id="KEY2" class="button released"></div>
+            <div id="KEY3" class="button released"></div>
+            <div id="KEY4" class="button released"></div>
+        </div>
+
+        <div id="display" class="display"></div>
+    </div>
+</div>
+
+<pre id="log" class="log"></pre>
+
+<script type="text/javascript">
+
+    const actionRelease = "RELEASE";
+    const actionPress = "PRESS";
+    const actionLog = "LOG";
+    const actionDisplay = "DISPLAY";
+
+    class Message {
+        action = "";
+        data = "";
+
+        constructor(action, data) {
+            this.action = action;
+            this.data = data;
+        }
+    }
+
+    class MessageBuffer {
+        messageBuffer = ""
+        messages = [];
+
+        buffer(data) {
+            this.messageBuffer += data;
+            let buffer = "";
+            for (let i = 0; i < this.messageBuffer.length; i++) {
+                const char = this.messageBuffer[i];
+                buffer += char;
+                if (char === "\n") {
+                    this.messages.push(buffer);
+                    buffer = "";
+                }
+            }
+            this.messageBuffer = buffer;
+        }
+
+        hasMessages() {
+            return this.messages.length > 0;
+        }
+
+        next() {
+            return this.messages.shift();
+        }
+    }
+
+    let ws;
+    let messageBuffer = new MessageBuffer();
+
+    function registerButtonEvents() {
+        document.querySelectorAll(".button").forEach((b) => {
+            b.addEventListener("mousedown", (e) => {
+                if (!e.target.classList.contains("pressed")) {
+                    sendMessage(new Message(actionPress, e.target.id))
+                }
+            })
+        });
+        document.querySelectorAll(".button").forEach((b) => {
+            b.addEventListener("mouseup", (e) => {
+                if (e.target.classList.contains("pressed")) {
+                    sendMessage(new Message(actionRelease, e.target.id))
+                }
+            })
+        });
+        document.querySelectorAll(".button").forEach((b) => {
+            b.addEventListener("mouseleave", (e) => {
+                if (e.target.classList.contains("pressed")) {
+                    sendMessage(new Message(actionRelease, e.target.id))
+                }
+            })
+        });
+    }
+
+    function applyButtonStatePress(buttonId) {
+        document.getElementById(buttonId).classList.add("pressed");
+        document.getElementById(buttonId).classList.contains("pressed")
+    }
+
+    function applyButtonStateRelease(buttonId) {
+        document.getElementById(buttonId).classList.remove("pressed");
+    }
+
+    function applyLogData(data) {
+        let logDiv = document.getElementById("log");
+        logDiv.innerText += data + "\n";
+        logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    function applyImage(data) {
+        document.getElementById("display").style.backgroundImage = 'url(' + data + ')';
+    }
+
+    function processMessage(msg) {
+        switch (msg.action) {
+            case actionPress:
+                applyButtonStatePress(msg.data)
+                break;
+            case actionRelease:
+                applyButtonStateRelease(msg.data)
+                break;
+            case actionLog:
+                applyLogData(msg.data)
+                break;
+            case actionDisplay:
+                applyImage(msg.data)
+                break;
+        }
+    }
+
+    function processWsMessage(msg) {
+        processMessage(JSON.parse(msg))
+    }
+
+    function sendMessage(msg) {
+        wsSend(JSON.stringify(msg))
+    }
+
+    function wsSend(data) {
+        if (!ws) {
+            console.warn("cannot send");
+            return
+        }
+        const EOM = "\n";
+        ws.send(data + EOM)
+    }
+
+    function connectWs() {
+        if (ws) {
+            return;
+        }
+        //ws = new WebSocket("ws://" + location.host + "/devicecontrol");
+        ws = new WebSocket("ws://localhost:8067/remote");
+        ws.onopen = function (evt) {
+            console.info("CONNECTED");
+            sendMessage(new Message(actionLog, "HELLO"))
+        }
+        ws.onclose = function (evt) {
+            console.info("CONNECTION CLOSED");
+            ws = null;
+        }
+        ws.onmessage = function (evt) {
+            //console.debug("DATA: " + evt.data);
+            messageBuffer.buffer(evt.data)
+            if (messageBuffer.hasMessages()) {
+                let msg = messageBuffer.next();
+                processWsMessage(msg);
+            }
+        }
+        ws.onerror = function (evt) {
+            console.warn("ERROR: " + evt.data);
+        }
+    }
+
+    registerButtonEvents();
+    connectWs();
+</script>
+</body>
+</html>
