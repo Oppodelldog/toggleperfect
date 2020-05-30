@@ -11,12 +11,10 @@ func startLogOutput(receiver chan string, output chan Message) {
 		timeout := time.NewTicker(time.Millisecond * 500)
 		var msg Message
 		for {
-			select {
-			case logMsg := <-receiver:
-				msg = Message{
-					Action: actionLog,
-					Data:   logMsg,
-				}
+			logMsg := <-receiver
+			msg = Message{
+				Action: actionLog,
+				Data:   logMsg,
 			}
 
 			select {

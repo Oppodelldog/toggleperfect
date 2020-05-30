@@ -16,16 +16,14 @@ func startLedOutput(ledState chan LedState, output chan Message) {
 		timeout := time.NewTicker(time.Millisecond * 500)
 		var msg Message
 		for {
-			select {
-			case state := <-ledState:
-				action := actionLedOff
-				if state.State {
-					action = actionLedOn
-				}
-				msg = Message{
-					Action: action,
-					Data:   state.Name,
-				}
+			state := <-ledState
+			action := actionLedOff
+			if state.State {
+				action = actionLedOn
+			}
+			msg = Message{
+				Action: action,
+				Data:   state.Name,
 			}
 
 			select {
