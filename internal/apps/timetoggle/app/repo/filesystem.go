@@ -2,12 +2,13 @@ package repo
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/util"
 )

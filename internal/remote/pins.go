@@ -1,22 +1,27 @@
 package remote
 
 import (
-	"log"
-
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
 	"github.com/Oppodelldog/toggleperfect/internal/led"
 )
 
 type LedStateNotifier struct {
-	Name string
+	Name   string
+	Update chan LedState
 }
 
 func (l LedStateNotifier) High() {
-	log.Print("I GOT HIGH", l.Name)
+	l.Update <- LedState{
+		Name:  l.Name,
+		State: true,
+	}
 }
 
 func (l LedStateNotifier) Low() {
-	log.Print("I GOT LOW", l.Name)
+	l.Update <- LedState{
+		Name:  l.Name,
+		State: false,
+	}
 }
 
 type KeyStateReceiver chan bool
@@ -45,12 +50,12 @@ func newNonBlockingBoolChannel() chan bool {
 	return ch
 }
 
-func LedPins() led.Pins {
+func LedPins(ledState chan LedState) led.Pins {
 	return led.Pins{
-		White:  LedStateNotifier{Name: "WHITE"},
-		Green:  LedStateNotifier{Name: "GREEN"},
-		Yellow: LedStateNotifier{Name: "YELLOW"},
-		Red:    LedStateNotifier{Name: "RED"},
+		White:  LedStateNotifier{Name: "WHITE", Update: ledState},
+		Green:  LedStateNotifier{Name: "GREEN", Update: ledState},
+		Yellow: LedStateNotifier{Name: "YELLOW", Update: ledState},
+		Red:    LedStateNotifier{Name: "RED", Update: ledState},
 	}
 }
 

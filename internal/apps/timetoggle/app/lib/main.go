@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"time"
+
+	"github.com/Oppodelldog/toggleperfect/internal/led"
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/apps"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app"
@@ -11,7 +12,7 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/util"
 )
 
-func New(display display.UpdateChannel) apps.App {
+func New(display display.UpdateChannel, _ led.UpdateChannel) apps.App {
 	return &app.TimeToggle{Display: display}
 }
 
@@ -66,7 +67,7 @@ func main1() {
 		Capture:     "sfmnik",
 	})
 	projectSummary.Pagination.NumItems = len(projectSummary.Projects)
-	fmt.Print(projectSummary.Pagination.NextPage())
+	log.Print(projectSummary.Pagination.NextPage())
 	displayUpdate <- app.CreateStartScreen(projectSummary)
 
 	time.Sleep(time.Second)
@@ -78,7 +79,8 @@ func main2() {
 	ctx := util.NewInterruptContext()
 
 	displayUpdate := apps.NewDevDisplayChannel(ctx)
-	timeToggle := New(displayUpdate)
+	ledUpdate := apps.NewDevLedUpdateChannel(ctx)
+	timeToggle := New(displayUpdate, ledUpdate)
 	timeToggle.Init()
 	timeToggle.Activate()
 

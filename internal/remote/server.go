@@ -2,22 +2,30 @@ package remote
 
 import (
 	"context"
-	"log"
 	"net/http"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
 	"github.com/Oppodelldog/toggleperfect/internal/led"
 )
 
-func StartServer(ctx context.Context) (led.Pins, keys.Pins, display.UpdateChannel) {
+func StartServer(ctx context.Context) (led.Pins, keys.Pins, display.UpdateChannel, chan string) {
 	m := http.NewServeMux()
 
-	ledPins := LedPins()
-	keyPIns := KeyPins()
-	remoteDisplay := make(display.UpdateChannel)
-	input, output := startController(ledPins, keyPIns)
-	startDisplay(remoteDisplay, output)
+	ledState := make(chan LedState)
+	ledPins := LedPins(ledState)
+	keyPins := KeyPins()
+	displayCh := make(display.UpdateChannel)
+	input := make(chan Message)
+	output := make(chan Message)
+	logReceiver := make(chan string)
+
+	startKeysInput(keyPins, input, output)
+	startLogOutput(logReceiver, output)
+	startLedOutput(ledState, output)
+	startDisplayOutput(displayCh, output)
 
 	m.HandleFunc("/remote", NewWebsocketEndpoint(input, output))
 	s := http.Server{
@@ -37,8 +45,8 @@ func StartServer(ctx context.Context) (led.Pins, keys.Pins, display.UpdateChanne
 	go func() {
 		log.Printf("Serving remote control server at ws://%v", s.Addr)
 		err := s.ListenAndServe()
-		log.Println("remote control Server done: %v", err)
+		log.Print("remote control Server done: %v", err)
 	}()
 
-	return ledPins, keyPIns, remoteDisplay
+	return ledPins, keyPins, displayCh, logReceiver
 }

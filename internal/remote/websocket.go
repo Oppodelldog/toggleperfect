@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/gorilla/websocket"
 )
@@ -53,18 +54,18 @@ func NewWebsocketEndpoint(input chan Message, output chan Message) http.HandlerF
 			for {
 				mt, message, err := c.ReadMessage()
 				if err != nil {
-					log.Println("error reading from client:", err)
+					log.Print("error reading from client:", err)
 					break
 				}
 				if mt != websocket.TextMessage {
-					log.Println("unexpected message type:", err)
+					log.Print("unexpected message type:", err)
 					break
 				}
 				mb.buffer(string(message))
 				if mb.hasMessages() {
 					msg, err := fromJson([]byte(mb.next()))
 					if err != nil {
-						log.Println("could decode client message:", err)
+						log.Print("could decode client message:", err)
 						continue
 					}
 					input <- msg
@@ -76,17 +77,17 @@ func NewWebsocketEndpoint(input chan Message, output chan Message) http.HandlerF
 			select {
 			case message, ok := <-output:
 				if !ok {
-					fmt.Println("output closed, websocket handler done")
+					log.Print("output closed, websocket handler done")
 					return
 				}
 				jsonBytes, err := toJson(message)
 				if err != nil {
-					log.Println("error encoding message:", err)
+					log.Print("error encoding message:", err)
 					break
 				}
 				err = c.WriteMessage(websocket.TextMessage, jsonBytes)
 				if err != nil {
-					log.Println("error writing to client:", err)
+					log.Print("error writing to client:", err)
 					return
 				}
 			}

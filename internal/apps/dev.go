@@ -4,11 +4,30 @@ import (
 	"context"
 	"image"
 	"image/jpeg"
-	"log"
 	"os"
+
+	"github.com/Oppodelldog/toggleperfect/internal/led"
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 )
+
+func NewDevLedUpdateChannel(ctx context.Context) led.UpdateChannel {
+	ledChannel := make(chan led.State)
+	go func() {
+		defer close(ledChannel)
+		for {
+			select {
+			case ledState := <-ledChannel:
+				log.Printf("LED UPDATE: %#v", ledState)
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
+	return ledChannel
+}
 
 func NewDevDisplayChannel(ctx context.Context) display.UpdateChannel {
 	images := make(display.UpdateChannel)

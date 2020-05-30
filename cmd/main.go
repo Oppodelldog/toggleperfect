@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
-	"log"
 	"net/http"
 	_ "net/http/pprof"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/config"
 	"github.com/Oppodelldog/toggleperfect/internal/display"
@@ -22,8 +23,9 @@ import (
 )
 
 func main() {
+	log.Init()
 	go func() {
-		log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
+		log.Print(http.ListenAndServe("0.0.0.0:6060", nil))
 	}()
 	log.Print("Toggle Perfect up an running")
 	ctx := util.NewInterruptContext()
@@ -42,7 +44,8 @@ func main() {
 	}
 
 	if config.EnableRemoteUI {
-		remoteLedPins, remoteKeyPins, remoteDisplay := remote.StartServer(ctx)
+		remoteLedPins, remoteKeyPins, remoteDisplay, logReceiver := remote.StartServer(ctx)
+		log.AddReceiver(logReceiver)
 		ledPins = append(ledPins, remoteLedPins)
 		keyPins = append(keyPins, remoteKeyPins)
 		displays = append(displays, remoteDisplay)
@@ -53,9 +56,8 @@ func main() {
 	demo.Intro(ctl.Leds)
 
 	eventHandler := apps.New([]apps.App{
-		apps.LoadAppFromFile("mails.so", ctl.Display),
-		apps.LoadAppFromFile("timetoggle.so", ctl.Display),
-		apps.LoadAppFromFile("stocks.so", ctl.Display),
+		apps.LoadAppFromFile("timetoggle.so", ctl.Display, ctl.Leds),
+		apps.LoadAppFromFile("leddemo.so", ctl.Display, ctl.Leds),
 	})
 
 	eventhandler.New(ctx, ctl.Keys, eventHandler)

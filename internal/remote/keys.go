@@ -1,10 +1,9 @@
 package remote
 
 import (
-	"log"
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
-	"github.com/Oppodelldog/toggleperfect/internal/led"
 )
 
 const actionDisplay = "DISPLAY"
@@ -12,14 +11,14 @@ const actionRelease = "RELEASE"
 const actionPress = "PRESS"
 const actionLog = "LOG"
 const actionHello = "HELLO"
+const actionLedOn = "LED_ON"
+const actionLedOff = "LED_OFF"
 const dataKey1 = "KEY1"
 const dataKey2 = "KEY2"
 const dataKey3 = "KEY3"
 const dataKey4 = "KEY4"
 
-func startController(ledPins led.Pins, keyPins keys.Pins) (chan Message, chan Message) {
-	input := make(chan Message)
-	output := make(chan Message)
+func startKeysInput(keyPins keys.Pins, input, output chan Message) {
 
 	go func() {
 		for msg := range input {
@@ -55,6 +54,4 @@ func startController(ledPins led.Pins, keyPins keys.Pins) (chan Message, chan Me
 			}
 		}
 	}()
-
-	return input, output
 }

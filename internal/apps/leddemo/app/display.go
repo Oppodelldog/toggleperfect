@@ -22,9 +22,9 @@ func CreateDisplayImage() image.Image {
 		Size: 14,
 	})
 	dc.SetFontFace(face)
-	headline := "***** MAILS PERFECT *****"
+	headline := "***** LED DEMO *****"
 	headlineW, _ := dc.MeasureString(headline)
-	dc.DrawString("***** MAILS PERFECT *****", screenW/2-headlineW/2, 24)
+	dc.DrawString("***** LED DEMO *****", screenW/2-headlineW/2, 24)
 
 	dc.InvertX()
 	dc.Push()

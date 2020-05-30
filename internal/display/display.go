@@ -2,13 +2,13 @@ package display
 
 import (
 	"context"
-	"fmt"
 	"image"
 	"image/color"
 	_ "image/png"
-	"log"
 	"os"
 	"time"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/util"
 
@@ -87,7 +87,7 @@ func NewDisplay() Display {
 		log.Fatalf("unable to open device: %#v", err)
 	}
 	display.reset()
-	fmt.Printf("init device: %v\n", time.Since(dtStart))
+	log.Printf("init device: %v", time.Since(dtStart))
 
 	display.device = device
 
@@ -143,7 +143,7 @@ func NewDisplay() Display {
 	display.sendData(0x12)
 	time.Sleep(2 * time.Millisecond)
 	display.setShortLut()
-	fmt.Printf("init device: %v\n", time.Since(dtStart))
+	log.Printf("init device: %v", time.Since(dtStart))
 	//  # EPD hardware init end
 	return display
 }
@@ -163,11 +163,11 @@ func (d Display) DisplayImage(img image.Image) {
 	dtStart := time.Now()
 	buf := newBuffer()
 	writeImageToBuffer(ditheredImage, buf)
-	fmt.Printf("writing to buffer: %v\n", time.Since(dtStart))
+	log.Printf("writing to buffer: %v", time.Since(dtStart))
 
 	dtStart = time.Now()
 	d.displayFrame(buf)
-	fmt.Printf("render to screen: %v\n", time.Since(dtStart))
+	log.Printf("render to screen: %v", time.Since(dtStart))
 }
 
 func writeImageToBuffer(ditheredImage *image.Gray, buf []byte) {

@@ -2,8 +2,9 @@ package app
 
 import (
 	"context"
-	"log"
 	"os"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server"
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/api/server/api"
@@ -15,7 +16,7 @@ func StartApiServer(ctx context.Context) {
 
 	swaggerSpec, err := loads.Embedded(server.SwaggerJSON, server.FlatSwaggerJSON)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	swaggerApi := api.NewTimetoggleAPI(swaggerSpec)
@@ -40,7 +41,7 @@ func StartApiServer(ctx context.Context) {
 	for _, optsGroup := range swaggerApi.CommandLineOptionsGroups {
 		_, err := parser.AddGroup(optsGroup.ShortDescription, optsGroup.LongDescription, optsGroup.Options)
 		if err != nil {
-			log.Fatalln(err)
+			log.Fatal(err)
 		}
 	}
 
@@ -61,7 +62,7 @@ func StartApiServer(ctx context.Context) {
 		apiServer.Port = 8001
 		apiServer.Host = ""
 		if err := apiServer.Serve(); err != nil {
-			log.Fatalln(err)
+			log.Fatal(err)
 		}
 	}()
 

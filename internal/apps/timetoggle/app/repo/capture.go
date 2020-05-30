@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 )
 
 type Capture struct {

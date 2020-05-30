@@ -2,16 +2,18 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"plugin"
+
+	"github.com/Oppodelldog/toggleperfect/internal/led"
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/util"
 )
 
-func LoadAppFromFile(filePath string, dsp display.UpdateChannel) App {
+func LoadAppFromFile(filePath string, displayUpdate display.UpdateChannel, ledUpdate led.UpdateChannel) App {
 	pluginFilePath := path.Join(getPluginPath(), filePath)
 	log.Printf("loading app plugin: %s", pluginFilePath)
 	p, err := plugin.Open(pluginFilePath)
@@ -23,8 +25,8 @@ func LoadAppFromFile(filePath string, dsp display.UpdateChannel) App {
 		panic(err)
 	}
 
-	if newAppPlugin, ok := s.(func(display display.UpdateChannel) App); ok {
-		appPlugin := newAppPlugin(dsp)
+	if newAppPlugin, ok := s.(func(displayUpdate display.UpdateChannel, ledUpdate led.UpdateChannel) App); ok {
+		appPlugin := newAppPlugin(displayUpdate, ledUpdate)
 		log.Printf("%p - %T - %#v", appPlugin, appPlugin, appPlugin)
 		return appPlugin
 	} else {

@@ -2,8 +2,9 @@ package app
 
 import (
 	"context"
-	"log"
 	"time"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/apps/timetoggle/app/repo"
 )

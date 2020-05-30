@@ -1,7 +1,7 @@
 package rpio
 
 import (
-	"log"
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/stianeikeland/go-rpio/v4"
 )

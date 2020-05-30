@@ -1,9 +1,10 @@
 package config
 
 import (
-	"log"
 	"os"
 	"strconv"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 )
 
 var EnableDeviceUI bool

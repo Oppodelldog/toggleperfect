@@ -157,10 +157,10 @@
     </svg>
     <div class="front">
         <div class="leds">
-            <div class="led led1 off"></div>
-            <div class="led led2 off"></div>
-            <div class="led led3 off"></div>
-            <div class="led led4 off"></div>
+            <div id="WHITE" class="led led1 off"></div>
+            <div id="GREEN" class="led led2 off"></div>
+            <div id="YELLOW" class="led led3 off"></div>
+            <div id="RED" class="led led4 off"></div>
         </div>
         <div class="buttons">
             <div id="KEY1" class="button released"></div>
@@ -181,6 +181,8 @@
     const actionPress = "PRESS";
     const actionLog = "LOG";
     const actionDisplay = "DISPLAY";
+    const actionLedOn = "LED_ON";
+    const actionLedOff = "LED_OFF";
 
     class Message {
         action = "";
@@ -255,14 +257,26 @@
         document.getElementById(buttonId).classList.remove("pressed");
     }
 
-    function applyLogData(data) {
+    function applyLogData(logMessage) {
         let logDiv = document.getElementById("log");
-        logDiv.innerText += data + "\n";
+        logDiv.innerText += logMessage + "\n";
         logDiv.scrollTop = logDiv.scrollHeight;
     }
 
-    function applyImage(data) {
-        document.getElementById("display").style.backgroundImage = 'url(' + data + ')';
+    function applyImage(imageData) {
+        document.getElementById("display").style.backgroundImage = 'url(' + imageData + ')';
+    }
+
+    function ledOn(ledId) {
+        console.log("LED ON",ledId)
+        document.getElementById(ledId).classList.remove("off");
+        document.getElementById(ledId).classList.add("on");
+    }
+
+    function ledOff(ledId) {
+        console.log("LED OFF",ledId)
+        document.getElementById(ledId).classList.remove("on");
+        document.getElementById(ledId).classList.add("off");
     }
 
     function processMessage(msg) {
@@ -278,6 +292,12 @@
                 break;
             case actionDisplay:
                 applyImage(msg.data)
+                break;
+            case actionLedOn:
+                ledOn(msg.data)
+                break;
+            case actionLedOff:
+                ledOff(msg.data)
                 break;
         }
     }

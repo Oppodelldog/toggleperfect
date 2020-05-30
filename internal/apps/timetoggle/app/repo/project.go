@@ -3,7 +3,8 @@ package repo
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 )
 
 type Project struct {

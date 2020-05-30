@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"image"
 	"image/png"
-	"log"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 )
 
-func startDisplay(display display.UpdateChannel, output chan Message) {
+func startDisplayOutput(display display.UpdateChannel, output chan Message) {
 	go func() {
 		for img := range display {
 			imageMessage, ok := imageToMessage(img)
