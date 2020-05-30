@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 	"image"
 	"image/png"
-
-	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 )
@@ -16,8 +15,15 @@ func startDisplayOutput(display display.UpdateChannel, output chan Message) {
 	go func() {
 		for img := range display {
 			imageMessage, ok := imageToMessage(img)
+			timeout := newOutputTimeout()
 			if ok {
-				output <- imageMessage
+				select {
+				case output <- imageMessage:
+					timeout.Stop()
+					timeout = newOutputTimeout()
+				case <-timeout.C:
+					printTimeoutMessage("display")
+				}
 			}
 		}
 	}()

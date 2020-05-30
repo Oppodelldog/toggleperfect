@@ -1,14 +1,8 @@
 package remote
 
-import (
-	"fmt"
-	"time"
-)
-
 func startLogOutput(receiver chan string, output chan Message) {
 
 	go func() {
-		timeout := time.NewTicker(time.Millisecond * 500)
 		var msg Message
 		for {
 			logMsg := <-receiver
@@ -17,12 +11,13 @@ func startLogOutput(receiver chan string, output chan Message) {
 				Data:   logMsg,
 			}
 
+			timeout := newOutputTimeout()
 			select {
 			case output <- msg:
 				timeout.Stop()
-				timeout = time.NewTicker(time.Millisecond * 500)
+				timeout = newOutputTimeout()
 			case <-timeout.C:
-				fmt.Println("timeout while syncing log message - connect remote client")
+				printTimeoutMessage("log message")
 			}
 		}
 	}()
