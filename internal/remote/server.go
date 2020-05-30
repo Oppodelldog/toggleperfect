@@ -2,9 +2,8 @@ package remote
 
 import (
 	"context"
-	"net/http"
-
 	"github.com/Oppodelldog/toggleperfect/internal/log"
+	"net/http"
 
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
