@@ -2,16 +2,19 @@
 
 <head>
     <meta charset="utf-8"/>
-    <title>TooglePerfect Dev UI</title>
+    <title>TogglePerfect Dev UI</title>
     <style type="text/css">
         body {
             font-family: monospace, "lucida console";
             margin: 0;
-            padding: 0;
+            padding: 30px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 30px;
+        }
+
+        * + .device {
+            margin-top: 20px;
         }
 
         .device {
@@ -19,6 +22,12 @@
             width: 500px;
             height: 310px;
             border: 1px solid #d7d7d7;
+        }
+
+        .cable {
+            position: absolute;
+            width: 100%;
+            height: 100%;
         }
 
         .back {
@@ -141,6 +150,7 @@
 </head>
 <body>
 <h1>Toggle Perfect Dev UI</h1>
+<div class="target">Target: <input id="target" type="text" value="ws://localhost:8067/remote"></div>
 <div class="device">
     <svg class="back" xmlns="http://www.w3.org/2000/svg" version="1.1">
         <defs>
@@ -224,6 +234,10 @@
     let ws;
     let messageBuffer = new MessageBuffer();
 
+    function getTargetUrl() {
+        return document.getElementById("target").value;
+    }
+
     function registerButtonEvents() {
         document.querySelectorAll(".button").forEach((b) => {
             b.addEventListener("mousedown", (e) => {
@@ -268,13 +282,11 @@
     }
 
     function ledOn(ledId) {
-        console.log("LED ON",ledId)
         document.getElementById(ledId).classList.remove("off");
         document.getElementById(ledId).classList.add("on");
     }
 
     function ledOff(ledId) {
-        console.log("LED OFF",ledId)
         document.getElementById(ledId).classList.remove("on");
         document.getElementById(ledId).classList.add("off");
     }
@@ -323,8 +335,10 @@
         if (ws) {
             return;
         }
-        //ws = new WebSocket("ws://" + location.host + "/devicecontrol");
-        ws = new WebSocket("ws://localhost:8067/remote");
+
+        const url = getTargetUrl()
+        console.log("CONNECTING", url);
+        ws = new WebSocket(url);
         ws.onopen = function (evt) {
             console.info("CONNECTED");
             sendMessage(new Message(actionLog, "HELLO"))
