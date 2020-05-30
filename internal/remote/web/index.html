@@ -382,7 +382,6 @@
             ws = null;
         }
         ws.onmessage = function (evt) {
-            //console.debug("DATA: " + evt.data);
             messageBuffer.buffer(evt.data)
             if (messageBuffer.hasMessages()) {
                 let msg = messageBuffer.next();
