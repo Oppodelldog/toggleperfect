@@ -28,6 +28,18 @@
             position: absolute;
             width: 100%;
             height: 100%;
+            left: 500px;
+            top: 166px;
+        }
+
+        .cable .on,
+        .cable .off {
+            display: none;
+        }
+
+        .cable.on .on,
+        .cable.off .off {
+            display: block;
         }
 
         .back {
@@ -144,14 +156,22 @@
             font-size: 14px;
             overflow: scroll;
         }
-
-
     </style>
 </head>
 <body>
 <h1>Toggle Perfect Dev UI</h1>
-<div class="target">Target: <input id="target" type="text" value="ws://localhost:8067/remote"></div>
+<div class="target"><label for="target">Target</label>: <input id="target" type="text"
+                                                               value="ws://localhost:8067/remote"></div>
 <div class="device">
+    <svg id="cable" class="cable off" width="320" height="200" xmlns="http://www.w3.org/2000/svg">
+
+        <path d="M10 10 H 40 V 40 H 10 L 10 10" fill="#999" transform="translate(214 20)"/>
+        <path class="on" d="M0 10 C 50 10, 200 10, 95 80 S 200 150, 240 45" stroke="black" fill="transparent"
+              stroke-width="3"/>
+        <path class="off" d="M0 10 C 50 10, 200 10, 95 80 S 200 150, 240 120" stroke="black" fill="transparent"
+              stroke-width="3"/>
+
+    </svg>
     <svg class="back" xmlns="http://www.w3.org/2000/svg" version="1.1">
         <defs>
             <g id="screw" class="screw" transform="scale(0.9)">
@@ -262,6 +282,16 @@
         });
     }
 
+    function onConnect() {
+        document.getElementById("cable").classList.remove("off");
+        document.getElementById("cable").classList.add("on");
+    }
+
+    function onDisconnect() {
+        document.getElementById("cable").classList.remove("on");
+        document.getElementById("cable").classList.add("off");
+    }
+
     function applyButtonStatePress(buttonId) {
         document.getElementById(buttonId).classList.add("pressed");
         document.getElementById(buttonId).classList.contains("pressed")
@@ -341,10 +371,12 @@
         ws = new WebSocket(url);
         ws.onopen = function (evt) {
             console.info("CONNECTED");
+            onConnect();
             sendMessage(new Message(actionLog, "HELLO"))
         }
         ws.onclose = function (evt) {
             console.info("CONNECTION CLOSED");
+            onDisconnect();
             ws = null;
         }
         ws.onmessage = function (evt) {
