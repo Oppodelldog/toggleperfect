@@ -6,9 +6,8 @@ type LedState struct {
 }
 
 func startLedOutput(ledState chan LedState, output chan Message) {
-
+	buffer := make(chan Message, 4)
 	go func() {
-
 		var msg Message
 		for {
 			state := <-ledState
@@ -21,15 +20,18 @@ func startLedOutput(ledState chan LedState, output chan Message) {
 				Data:   state.Name,
 			}
 
-			timeout := newOutputTimeout()
 			select {
-			case output <- msg:
-				timeout.Stop()
-				timeout = newOutputTimeout()
-			case <-timeout.C:
-				printTimeoutMessage("led state")
+			case buffer <- msg:
+			default:
+				<-buffer
+				buffer <- msg
 			}
+		}
+	}()
 
+	go func() {
+		for {
+			output <- <-buffer
 		}
 	}()
 

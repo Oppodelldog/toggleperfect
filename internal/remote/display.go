@@ -12,19 +12,24 @@ import (
 )
 
 func startDisplayOutput(display display.UpdateChannel, output chan Message) {
+	buffer := make(chan Message, 1)
 	go func() {
 		for img := range display {
 			imageMessage, ok := imageToMessage(img)
-			timeout := newOutputTimeout()
 			if ok {
 				select {
-				case output <- imageMessage:
-					timeout.Stop()
-					timeout = newOutputTimeout()
-				case <-timeout.C:
-					printTimeoutMessage("display")
+				case buffer <- imageMessage:
+				default:
+					<-buffer
+					buffer <- imageMessage
 				}
 			}
+		}
+	}()
+
+	go func() {
+		for {
+			output <- <-buffer
 		}
 	}()
 }

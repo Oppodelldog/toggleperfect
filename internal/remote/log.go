@@ -1,7 +1,7 @@
 package remote
 
 func startLogOutput(receiver chan string, output chan Message) {
-
+	buffer := make(chan Message, 1)
 	go func() {
 		var msg Message
 		for {
@@ -11,14 +11,18 @@ func startLogOutput(receiver chan string, output chan Message) {
 				Data:   logMsg,
 			}
 
-			timeout := newOutputTimeout()
 			select {
-			case output <- msg:
-				timeout.Stop()
-				timeout = newOutputTimeout()
-			case <-timeout.C:
-				printTimeoutMessage("log message")
+			case buffer <- msg:
+			default:
+				<-buffer
+				buffer <- msg
 			}
+		}
+	}()
+
+	go func() {
+		for {
+			output <- <-buffer
 		}
 	}()
 }
