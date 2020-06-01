@@ -1,7 +1,7 @@
 package remote
 
 func startLogOutput(receiver chan string, output chan Message) {
-	buffer := make(chan Message, 1)
+	buffer := make(chan Message, 20)
 	go func() {
 		var msg Message
 		for {
