@@ -51,7 +51,7 @@ func main() {
 		displays = append(displays, remoteDisplay)
 	}
 
-	ctl := ui.NewController(ctx, ctxLED, ledPins, keyPins, displays)
+	ctl := ui.New(ctx, ctxLED, ledPins, keyPins, displays)
 
 	demo.Intro(ctl.Leds)
 

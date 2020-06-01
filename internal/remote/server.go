@@ -2,11 +2,12 @@ package remote
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
 	"github.com/Oppodelldog/toggleperfect/internal/led"
 	"github.com/Oppodelldog/toggleperfect/internal/log"
-	"net/http"
 )
 
 func StartServer(ctx context.Context) (led.Pins, keys.Pins, display.UpdateChannel, chan string) {

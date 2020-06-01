@@ -8,15 +8,15 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/led"
 )
 
-func NewController(ctx context.Context, ctxLED context.Context, ledPins []led.Pins, keyPins []keys.Pins, displays []display.UpdateChannel) Controller {
-	return Controller{
+func New(ctx context.Context, ctxLED context.Context, ledPins []led.Pins, keyPins []keys.Pins, displays []display.UpdateChannel) UI {
+	return UI{
 		Display: mergeDisplays(displays),
 		Leds:    led.NewLEDChannel(ctxLED, mergeLedPins(ledPins)),
 		Keys:    keys.NewEventChannel(ctx, mergeKeyPins(keyPins)),
 	}
 }
 
-type Controller struct {
+type UI struct {
 	Display display.UpdateChannel
 	Leds    led.UpdateChannel
 	Keys    <-chan keys.Event

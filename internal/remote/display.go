@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"github.com/Oppodelldog/toggleperfect/internal/log"
 	"image"
 	"image/png"
+
+	"github.com/Oppodelldog/toggleperfect/internal/log"
 
 	"github.com/Oppodelldog/toggleperfect/internal/display"
 )
