@@ -194,6 +194,10 @@ func loadProjects() []Project {
 		panic(err)
 	}
 	for _, prj := range list {
+		if prj.Closed {
+			continue
+		}
+
 		projects = append(projects, Project{
 			Name:        prj.ID,
 			Description: prj.Description,
