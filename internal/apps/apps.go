@@ -4,6 +4,8 @@ import (
 	"github.com/Oppodelldog/toggleperfect/internal/eventhandler"
 	"github.com/Oppodelldog/toggleperfect/internal/keys"
 	"github.com/Oppodelldog/toggleperfect/internal/log"
+	"runtime/debug"
+	"time"
 )
 
 func New(apps []App) *Apps {
@@ -44,6 +46,15 @@ func (n *Apps) current() App {
 }
 
 func (n *Apps) HandleEvent(event keys.Event) bool {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("Recovered in defer of HandleEvent: %v", r)
+			log.Print(string(debug.Stack()))
+			time.Sleep(100 * time.Millisecond)
+			panic(r)
+		}
+	}()
+
 	if n.current().HandleEvent(event) {
 		return false
 	}
