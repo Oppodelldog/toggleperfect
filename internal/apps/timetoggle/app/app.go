@@ -29,6 +29,8 @@ func (a *TimeToggle) Init() {
 	a.serverCtx, a.cancelServer = context.WithCancel(context.Background())
 	StartApiServer(a.serverCtx)
 	a.projects = loadProjects()
+	a.loadProjectSummary()
+	a.Display <- CreateStartScreen(a.projectSummary)
 }
 
 func (a TimeToggle) Dispose() {
@@ -37,6 +39,10 @@ func (a TimeToggle) Dispose() {
 
 func (a *TimeToggle) Activate() {
 	a.updateScreenTicker = time.NewTicker(time.Minute * 10)
+	a.activate()
+}
+
+func (a *TimeToggle) activate() {
 	a.projects = loadProjects()
 	a.activeProject = 0
 	a.summaryOffset = 0
@@ -82,33 +88,40 @@ func (a *TimeToggle) HandleEvent(event keys.Event) bool {
 				return true
 			}
 		}
-	} else {
-		if event.State == keys.Clicked {
-			if event.Key == keys.Key1 {
-				a.capturing = false
-				a.stopCapture()
-				a.Display <- CreateStartScreen(a.projectSummary)
-			}
-			if event.Key == keys.Key2 && a.hasProjects() {
-				projectID := a.currentProject().Name
-				toggleProjectClosed(projectID)
-				a.updateProjects()
-			}
-			if event.Key == keys.Key3 && a.hasProjects() {
-				a.stopCapture()
-				nextProject := a.nextProject()
-				a.startCapture(nextProject)
-				a.Display <- CreateProjectScreen(nextProject)
-			}
-			if event.Key == keys.Key4 && a.hasProjects() {
-				a.stopCapture()
-				previousProject := a.previousProject()
-				a.startCapture(previousProject)
-				a.Display <- CreateProjectScreen(previousProject)
-			}
+	} else if event.State == keys.Clicked {
+		if event.Key == keys.Key1 {
+			a.capturing = false
+			a.stopCapture()
+			a.Display <- CreateStartScreen(a.projectSummary)
 		}
+		if event.Key == keys.Key2 && a.hasProjects() {
+			projectID := a.currentProject().Name
+			toggleProjectClosed(projectID)
+			a.updateProjects()
+		}
+		if event.Key == keys.Key3 && a.hasProjects() {
+			a.stopCapture()
+			nextProject := a.nextProject()
+			a.startCapture(nextProject)
+			a.Display <- CreateProjectScreen(nextProject)
+		}
+		if event.Key == keys.Key4 && a.hasProjects() {
+			a.stopCapture()
+			previousProject := a.previousProject()
+			a.startCapture(previousProject)
+			a.Display <- CreateProjectScreen(previousProject)
+		}
+
 		return true
+	} else if event.State == keys.PressedReleased {
+		if event.Key == keys.Key2 && a.hasProjects() {
+			projectID := a.currentProject().Name
+			a.stopCapture()
+			removeProject(projectID)
+			a.activate()
+		}
 	}
+
 	return false
 }
 
@@ -136,6 +149,13 @@ func toggleProjectClosed(ID string) {
 		if err != nil {
 			log.Printf("error saving project for toggle closed flag: %v", err)
 		}
+	}
+}
+
+func removeProject(ID string) {
+	err := repo.DeleteProject(ID)
+	if err != nil {
+		log.Printf("error deleting project: %v", err)
 	}
 }
 
@@ -188,16 +208,15 @@ func (a *TimeToggle) selectProject(ID string) {
 
 func loadProjects() []Project {
 	var projects []Project
+
 	list, err := repo.GetProjectList()
+
 	if err != nil {
 		err = fmt.Errorf("error loading projects: %v", err)
 		panic(err)
 	}
-	for _, prj := range list {
-		if prj.Closed {
-			continue
-		}
 
+	for _, prj := range list {
 		projects = append(projects, Project{
 			Name:        prj.ID,
 			Description: prj.Description,
