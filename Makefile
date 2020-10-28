@@ -8,6 +8,7 @@ build:
 build-plugins:
 	cd internal/apps/timetoggle && make
 	cd internal/apps/leddemo && make
+	cd internal/apps/birthdayreminder && make
 
 start: build
 	nohup bin/toggleperfect > toggleperfect.log 2>&1 &

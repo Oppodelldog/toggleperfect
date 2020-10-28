@@ -5,7 +5,7 @@ import (
 	"image/color"
 )
 
-func convertToGray(img image.Image) *image.Gray {
+func ConvertToGray(img image.Image) *image.Gray {
 	b := img.Bounds()
 	grayImage := image.NewGray(b)
 	for y := 0; y < b.Max.Y; y++ {

@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 	_ "net/http/pprof"
+	"os"
+	"strings"
 
 	"github.com/Oppodelldog/toggleperfect/internal/log"
 
@@ -55,10 +57,14 @@ func main() {
 
 	demo.Intro(ctl.Leds)
 
-	eventHandler := apps.New([]apps.App{
-		apps.LoadAppFromFile("timetoggle.so", ctl.Display, ctl.Leds),
-		apps.LoadAppFromFile("leddemo.so", ctl.Display, ctl.Leds),
-	})
+	var exts []apps.App
+	extensions := strings.Split(os.Getenv("TOGGLE_PERFECT_EXTENSIONS"), ",")
+
+	for _, extension := range extensions {
+		exts = append(exts, apps.LoadAppFromFile(extension, ctl.Display, ctl.Leds))
+	}
+
+	eventHandler := apps.New(exts)
 
 	eventhandler.New(ctx, ctl.Keys, eventHandler)
 

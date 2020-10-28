@@ -157,7 +157,7 @@ type Display struct {
 }
 
 func (d Display) DisplayImage(img image.Image) {
-	grayImage := convertToGray(img)
+	grayImage := ConvertToGray(img)
 	ditheredImage := halfgone.ThresholdDitherer{Threshold: 240}.Apply(grayImage)
 
 	dtStart := time.Now()
